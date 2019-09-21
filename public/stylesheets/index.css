@@ -1,12 +1,6 @@
 html, body { 
-  margin:0; 
-  padding:0;
-  height:100%; 
-  width:100%; 
-}
-
-canvas {
-  width: 50vw;
-  height: 50vh;
-  display: block;
+  margin: 0; 
+  padding: 0;
+  height: 100%; 
+  width: 100%; 
 }
