@@ -117,7 +117,7 @@ const main = {
             boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
             draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
               BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
-          }, 500);
+          }, 50 * i);
         }
       }
       startBlock = null;
