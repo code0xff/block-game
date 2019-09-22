@@ -4,8 +4,8 @@ let boardWidth;
 let boardHeight;
 
 const option = {
-  rowSize: 10,
-  colSize: 10
+  rowSize: 8,
+  colSize: 8
 }
 
 const boardArray = [];
@@ -91,24 +91,33 @@ const main = {
     boardCanvas.addEventListener("mousedown", function (e) {
       const pos = calculate.getMousePos(boardCanvas, e);
       startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-      selectedBlocks.push(startBlock.row + '' + startBlock.col);
+      if (boardArray[startBlock.row][startBlock.col].type !== 0) {
+        selectedBlocks.push(startBlock.row + '' + startBlock.col);
+      }
     }, false);
 
     boardCanvas.addEventListener("mouseup", function (e) {
       if (selectedBlocks.length > 2) {
-        // for (let i = 0; i < selectedBlocks.length - 1; i++) {
-        //   const prevBlock = calculate.decodeId(selectedBlocks[i]);
-        //   const prevCenterPos = calculate.getBlockCenterPos(prevBlock.row, prevBlock.col, blockWidth, blockHeight, startX, startY);
-        //   const currentBlock = calculate.decodeId(selectedBlocks[i + 1]);
-        //   const currentCenterPos = calculate.getBlockCenterPos(currentBlock.row, currentBlock.col, blockWidth, blockHeight, startX, startY);
+        for (let i = 0; i < selectedBlocks.length - 1; i++) {
+          const prevBlock = calculate.decodeId(selectedBlocks[i]);
+          const prevCenterPos = calculate.getBlockCenterPos(prevBlock.row, prevBlock.col, blockWidth, blockHeight, startX, startY);
+          const currentBlock = calculate.decodeId(selectedBlocks[i + 1]);
+          const currentCenterPos = calculate.getBlockCenterPos(currentBlock.row, currentBlock.col, blockWidth, blockHeight, startX, startY);
           
-        //   draw.drawBlockPath(boardContext, prevCenterPos.x, prevCenterPos.y, currentCenterPos.x, currentCenterPos.y);
-        // }
+          draw.drawBlockPath(boardContext, prevCenterPos.x, prevCenterPos.y, currentCenterPos.x, currentCenterPos.y);
+        }
 
+        const blockTypeSize = BlockTypes.length;
         for (let i = 0; i < selectedBlocks.length; i++) {
           const removeBlock = calculate.decodeId(selectedBlocks[i]);
+          boardArray[removeBlock.row][removeBlock.col].type = 0;
           const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
-          draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+          setTimeout(function(){
+            draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+            boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
+            draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
+              BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
+          }, 500);
         }
       }
       startBlock = null;
@@ -118,7 +127,7 @@ const main = {
     boardCanvas.addEventListener("mousemove", function (e) {
       const pos = calculate.getMousePos(boardCanvas, e);
       const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-      if (blockOnPath.row !== -1 && blockOnPath.col !== -1
+      if (blockOnPath.row !== -1 && blockOnPath.col !== -1 && boardArray[blockOnPath.row][blockOnPath.col].type !== 0
         && selectedBlocks.indexOf(calculate.createId(blockOnPath.row, blockOnPath.col)) === -1 && selectedBlocks.length !== 0) {
         const prevBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
         if (Math.abs(parseInt(prevBlock.row - blockOnPath.row)) + Math.abs(parseInt(prevBlock.col - blockOnPath.col)) === 1 
@@ -155,12 +164,6 @@ const main = {
     }, false);
   }
 }
-
-window.requestAnimFrame = (function () {
-  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
-    window.setTimeout(callback, 1000 / 60);
-  };
-})();
 
 main.init();
 game.start();
