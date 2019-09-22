@@ -20,8 +20,12 @@ const draw = {
   drawBlockPath: function(ctx, fromX, fromY, toX, toY) {
     ctx.fillStyle = "#000000";
     ctx.beginPath();
+    ctx.lineWidth = 5;
     ctx.moveTo(fromX, fromY);
     ctx.lineTo(toX, toY);
     ctx.stroke();
+  },
+  removeBlock: function(ctx, x, y, width, height) {
+    ctx.clearRect(x, y, width, height);
   }
 }

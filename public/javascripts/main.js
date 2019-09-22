@@ -29,17 +29,14 @@ let selectedBlocks = [];
 
 const board = {
   initBoard: function () {
-    console.log('init board');
     for (var i = 0; i < option.rowSize; i++) {
       boardArray[i] = [];
       for (var j = 0; j < option.colSize; j++) {
         boardArray[i][j] = { type: 0 };
       }
     }
-    console.log(boardArray);
   },
   setBlocksOnBoard: function() {
-    console.log('setBlocksOnBoard');
     const blockTypeSize = BlockTypes.length;
     for (var i = 0; i < option.rowSize; i++) {
       boardArray[i] = [];
@@ -47,10 +44,8 @@ const board = {
         boardArray[i][j] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
       }
     }
-    console.log(boardArray);
   },
   draw: function() {
-    console.log('draw');
     blockWidth = parseInt((boardWidth - 20) / option.colSize);
     blockHeight = parseInt((boardHeight - 20) / option.rowSize);
     startX = (boardWidth - (blockWidth * option.rowSize)) / 2;
@@ -100,17 +95,36 @@ const main = {
     }, false);
 
     boardCanvas.addEventListener("mouseup", function (e) {
-      // draw.drawBlockPath(boardContext, selectedBlock.row, selectedBlock.col, endBlock.row, endBlock.col);
+      if (selectedBlocks.length > 2) {
+        // for (let i = 0; i < selectedBlocks.length - 1; i++) {
+        //   const prevBlock = calculate.decodeId(selectedBlocks[i]);
+        //   const prevCenterPos = calculate.getBlockCenterPos(prevBlock.row, prevBlock.col, blockWidth, blockHeight, startX, startY);
+        //   const currentBlock = calculate.decodeId(selectedBlocks[i + 1]);
+        //   const currentCenterPos = calculate.getBlockCenterPos(currentBlock.row, currentBlock.col, blockWidth, blockHeight, startX, startY);
+          
+        //   draw.drawBlockPath(boardContext, prevCenterPos.x, prevCenterPos.y, currentCenterPos.x, currentCenterPos.y);
+        // }
+
+        for (let i = 0; i < selectedBlocks.length; i++) {
+          const removeBlock = calculate.decodeId(selectedBlocks[i]);
+          const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
+          draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+        }
+      }
       startBlock = null;
       selectedBlocks = [];
     }, false);
 
     boardCanvas.addEventListener("mousemove", function (e) {
       const pos = calculate.getMousePos(boardCanvas, e);
-      const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize)
-      if (selectedBlocks.indexOf(blockOnPath.row + '' + blockOnPath.col) === -1) {
-        selectedBlocks.push(blockOnPath.row + '' + blockOnPath.col);
-        console.log(selectedBlocks);
+      const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
+      if (blockOnPath.row !== -1 && blockOnPath.col !== -1
+        && selectedBlocks.indexOf(calculate.createId(blockOnPath.row, blockOnPath.col)) === -1 && selectedBlocks.length !== 0) {
+        const prevBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
+        if (Math.abs(parseInt(prevBlock.row - blockOnPath.row)) + Math.abs(parseInt(prevBlock.col - blockOnPath.col)) === 1 
+        && boardArray[prevBlock.row][prevBlock.col].type === boardArray[blockOnPath.row][blockOnPath.col].type) {
+          selectedBlocks.push(blockOnPath.row + '' + blockOnPath.col);
+        }
       }
     }, false);
 
@@ -141,6 +155,12 @@ const main = {
     }, false);
   }
 }
+
+window.requestAnimFrame = (function () {
+  return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || function (callback) {
+    window.setTimeout(callback, 1000 / 60);
+  };
+})();
 
 main.init();
 game.start();
