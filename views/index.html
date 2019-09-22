@@ -5,20 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
     <link rel="stylesheet" type="text/css" href="stylesheets/index.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="stylesheets/board.css" media="screen" />
     <title>Block Game</title>
   </head>
-  <script type="text/javascript" src="javascripts/BlockTypes.js"></script>
-  <script type="text/javascript" src="javascripts/Block.js"></script>
-  <script type="text/javascript" src="javascripts/Board.js"></script>
-  <script type="text/javascript" src="javascripts/Game.js"></script>
-  <script type="text/javascript" src="javascripts/App.js"></script>
-  <script>
-    function init() {
-      app.init();
-    }
-  </script>
-  <body onload="init();">
-    <canvas id="board" class="canvas-board"></canvas>
+  <body>
+    <canvas id="board" class="canvas-board"></canvas>  
+    <script type="text/javascript" src="javascripts/draw.js"></script>
+    <script type="text/javascript" src="javascripts/calculate.js"></script>
+    <script type="text/javascript" src="javascripts/main.js"></script>
   </body>
 </html>

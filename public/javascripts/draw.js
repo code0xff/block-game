@@ -1,4 +1,4 @@
-const block = {
+const draw = {
   drawRoundedRect: function(ctx, x, y, width, height, radius, color, type) {
     ctx.fillStyle = color;
     ctx.beginPath();
