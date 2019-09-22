@@ -24,7 +24,8 @@ const BlockTypes = [
   '#555555' // black
 ];
 
-let seletedBlock;
+let startBlock;
+let selectedBlocks = [];
 
 const board = {
   initBoard: function () {
@@ -94,22 +95,27 @@ const main = {
 
     boardCanvas.addEventListener("mousedown", function (e) {
       const pos = calculate.getMousePos(boardCanvas, e);
-      selectedBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
+      startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
+      selectedBlocks.push(startBlock.row + '' + startBlock.col);
     }, false);
 
     boardCanvas.addEventListener("mouseup", function (e) {
-      selectedBlock = null;
+      // draw.drawBlockPath(boardContext, selectedBlock.row, selectedBlock.col, endBlock.row, endBlock.col);
+      startBlock = null;
+      selectedBlocks = [];
     }, false);
 
     boardCanvas.addEventListener("mousemove", function (e) {
       const pos = calculate.getMousePos(boardCanvas, e);
-      const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-      console.log(blockOnPath);
+      const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize)
+      if (selectedBlocks.indexOf(blockOnPath.row + '' + blockOnPath.col) === -1) {
+        selectedBlocks.push(blockOnPath.row + '' + blockOnPath.col);
+        console.log(selectedBlocks);
+      }
     }, false);
 
     boardCanvas.addEventListener("touchstart", function (e) {
       e.preventDefault();
-      const pos = calculate.getTouchPos(boardCanvas, e);
       const touch = e.touches[0];
       const mouseEvent = new MouseEvent("mousedown", {
         clientX: touch.clientX,

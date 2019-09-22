@@ -17,7 +17,7 @@ const draw = {
       ctx.fill();
     }
   },
-  drawBlockPath: function(fromX, fromY, toX, toY) {
+  drawBlockPath: function(ctx, fromX, fromY, toX, toY) {
     ctx.fillStyle = "#000000";
     ctx.beginPath();
     ctx.moveTo(fromX, fromY);

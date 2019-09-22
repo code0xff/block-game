@@ -20,12 +20,5 @@ const calculate = {
       x: mouseEvent.clientX - rect.left,
       y: mouseEvent.clientY - rect.top
     }
-  },
-  getTouchPos: function(canvasDom, touchEvent) {
-    const rect = canvasDom.getBoundingClientRect();
-    return {
-      x: touchEvent.touches[0].clientX - rect.left,
-      y: touchEvent.touches[0].clientY - rect.top
-    };
   }
 }
