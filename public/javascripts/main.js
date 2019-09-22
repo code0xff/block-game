@@ -130,7 +130,7 @@ const main = {
       if (blockOnPath.row !== -1 && blockOnPath.col !== -1 && boardArray[blockOnPath.row][blockOnPath.col].type !== 0
         && selectedBlocks.indexOf(calculate.createId(blockOnPath.row, blockOnPath.col)) === -1 && selectedBlocks.length !== 0) {
         const prevBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
-        if (Math.abs(parseInt(prevBlock.row - blockOnPath.row)) + Math.abs(parseInt(prevBlock.col - blockOnPath.col)) === 1 
+        if (Math.abs(parseInt(prevBlock.row - blockOnPath.row)) <= 1 && Math.abs(parseInt(prevBlock.col - blockOnPath.col)) <= 1 
         && boardArray[prevBlock.row][prevBlock.col].type === boardArray[blockOnPath.row][blockOnPath.col].type) {
           selectedBlocks.push(blockOnPath.row + '' + blockOnPath.col);
         }
