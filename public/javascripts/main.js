@@ -62,6 +62,24 @@ const board = {
       x = startX;
       y += blockHeight;
     }
+  },
+  resolve: function() {
+    if (selectedBlocks.length > 2) {
+      const blockTypeSize = BlockTypes.length;
+      for (let i = 0; i < selectedBlocks.length; i++) {
+        const removeBlock = calculate.decodeId(selectedBlocks[i]);
+        boardArray[removeBlock.row][removeBlock.col].type = 0;
+        const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
+        setTimeout(function(){
+          draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+          boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
+          draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
+            BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
+        }, 50 * i);
+      }
+    }
+    startBlock = null;
+    selectedBlocks = [];
   }
 }
 
@@ -89,36 +107,23 @@ const main = {
     boardContext = boardCanvas.getContext("2d");
 
     boardCanvas.addEventListener("mousedown", function (e) {
-      const pos = calculate.getMousePos(boardCanvas, e);
-      startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-      if (boardArray[startBlock.row][startBlock.col].type > 0) {
-        selectedBlocks.push(startBlock.row + '' + startBlock.col);
+      if (selectedBlocks.length !== 0) {
+        board.resolve();
+      } else {
+        const pos = calculate.getMousePos(boardCanvas, e);
+        startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
+        if (boardArray[startBlock.row][startBlock.col].type > 0) {
+          selectedBlocks.push(startBlock.row + '' + startBlock.col);
+        }
       }
     }, false);
 
     boardCanvas.addEventListener("mouseup", function (e) {
-      if (selectedBlocks.length > 2) {
-        const blockTypeSize = BlockTypes.length;
-        for (let i = 0; i < selectedBlocks.length; i++) {
-          const removeBlock = calculate.decodeId(selectedBlocks[i]);
-          boardArray[removeBlock.row][removeBlock.col].type = 0;
-          const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
-          setTimeout(function(){
-            draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
-            boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
-            draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
-              BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
-          }, 50 * i);
-        }
-      }
-      startBlock = null;
-      selectedBlocks = [];
+      board.resolve();
     }, false);
 
     boardCanvas.addEventListener("mouseout", function (e) {
-      e.preventDefault();
-      var mouseEvent = new MouseEvent("mouseup", {});
-      boardCanvas.dispatchEvent(mouseEvent);
+      board.resolve();
     }, false);
 
     boardCanvas.addEventListener("mousemove", function (e) {
