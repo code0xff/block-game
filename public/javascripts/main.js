@@ -18,7 +18,6 @@ let startY;
 
 const BlockTypes = [
   '#ffffff',
-  '#ffffff', // empty
   '#F4FA58', // yello
   '#FF4000', // red
   '#4CAF50', // green
