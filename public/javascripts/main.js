@@ -182,6 +182,12 @@ const main = {
       });
       boardCanvas.dispatchEvent(mouseEvent);
     }, false);
+
+    boardCanvas.addEventListener("touchcancel", function (e) {
+      e.preventDefault();
+      var mouseEvent = new MouseEvent("mouseout", {});
+      boardCanvas.dispatchEvent(mouseEvent);
+    }, false);
   }
 }
 
