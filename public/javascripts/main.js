@@ -4,8 +4,8 @@ let boardWidth;
 let boardHeight;
 
 const option = {
-  rowSize: 7,
-  colSize: 7,
+  rowSize: 8,
+  colSize: 8,
   offsetX: 40,
   offsetY: 40
 }
@@ -17,7 +17,7 @@ let startX;
 let startY;
 
 const BlockTypes = [
-  '#ffffff',
+  '#ffffff', // empty
   '#F4FA58', // yello
   '#FF4000', // red
   '#4CAF50', // green
