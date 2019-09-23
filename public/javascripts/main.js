@@ -4,8 +4,10 @@ let boardWidth;
 let boardHeight;
 
 const option = {
-  rowSize: 8,
-  colSize: 8
+  rowSize: 7,
+  colSize: 7,
+  offsetX: 40,
+  offsetY: 40
 }
 
 const boardArray = [];
@@ -20,7 +22,6 @@ const BlockTypes = [
   '#FF4000', // red
   '#4CAF50', // green
   '#008CBA', // blue
-  '#AC58FA', // purple
   '#555555' // black
 ];
 
@@ -46,8 +47,8 @@ const board = {
     }
   },
   draw: function() {
-    blockWidth = parseInt((boardWidth - 20) / option.colSize);
-    blockHeight = parseInt((boardHeight - 20) / option.rowSize);
+    blockWidth = parseInt((boardWidth - option.offsetX) / option.colSize);
+    blockHeight = parseInt((boardHeight - option.offsetY) / option.rowSize);
     startX = (boardWidth - (blockWidth * option.rowSize)) / 2;
     startY = (boardHeight - (blockHeight * option.colSize)) / 2;
 
