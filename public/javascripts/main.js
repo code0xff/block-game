@@ -49,8 +49,8 @@ const board = {
     }
   },
   draw: function() {
-    blockWidth = parseInt(boardWidth / (option.colSize + 2));
-    blockHeight = parseInt(boardHeight / (option.rowSize + 2));
+    blockWidth = parseInt(boardWidth / (option.colSize + 1));
+    blockHeight = parseInt(boardHeight / (option.rowSize + 1));
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
     startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2);
 
