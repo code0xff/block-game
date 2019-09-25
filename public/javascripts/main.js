@@ -4,10 +4,8 @@ let boardWidth;
 let boardHeight;
 
 const option = {
-  rowSize: 8,
-  colSize: 8,
-  offsetX: 40,
-  offsetY: 40
+  rowSize: 7,
+  colSize: 7
 }
 
 const boardArray = [];
@@ -51,11 +49,15 @@ const board = {
     }
   },
   draw: function() {
-    blockWidth = parseInt((boardWidth - option.offsetX) / option.colSize);
-    blockHeight = parseInt((boardHeight - option.offsetY) / option.rowSize);
-    startX = (boardWidth - (blockWidth * option.rowSize)) / 2;
-    startY = (boardHeight - (blockHeight * option.colSize)) / 2;
+    blockWidth = parseInt(boardWidth / (option.colSize + 2));
+    blockHeight = parseInt(boardHeight / (option.rowSize + 2));
+    startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2);
 
+    // blockWidth = parseInt((boardWidth - option.offsetX) / option.colSize);
+    // blockHeight = parseInt((boardHeight - option.offsetY) / option.rowSize);
+    // startX = (boardWidth - (blockWidth * option.rowSize)) / 2;
+    // startY = (boardHeight - (blockHeight * option.colSize)) / 2;
     let x = startX;
     let y = startY;
 
@@ -128,7 +130,7 @@ const main = {
       } else {
         const pos = calculate.getMousePos(boardCanvas, e);
         startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-        if (boardArray[startBlock.row][startBlock.col].type > 0) {
+        if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
           selectedBlocks.push(startBlock.row + '' + startBlock.col);
         }
       }
