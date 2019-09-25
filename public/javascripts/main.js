@@ -54,10 +54,6 @@ const board = {
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
     startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2);
 
-    // blockWidth = parseInt((boardWidth - option.offsetX) / option.colSize);
-    // blockHeight = parseInt((boardHeight - option.offsetY) / option.rowSize);
-    // startX = (boardWidth - (blockWidth * option.rowSize)) / 2;
-    // startY = (boardHeight - (blockHeight * option.colSize)) / 2;
     let x = startX;
     let y = startY;
 
@@ -84,7 +80,7 @@ const board = {
           draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
             BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
         }, 50 * i);
-        sumOfScore += ((i + 1) * 10);
+        sumOfScore += (i + 1);
       }
 
       totalScore += sumOfScore;
