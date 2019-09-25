@@ -11,3 +11,8 @@ html, body {
   height: 100vw;
   display: block;
 }
+
+.score {
+  text-align: center;
+  color: white;
+}

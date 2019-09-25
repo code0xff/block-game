@@ -2,7 +2,11 @@ const calculate = {
   getSelectedBlock: function(pos, blockWidth, blockHeight, startX, startY, rowSize, colSize) {
     const row = Math.floor((pos.y - startY) / blockHeight);
     const col = Math.floor((pos.x - startX) / blockWidth);
-    if (row >= 0 && row < rowSize && col >= 0 && col < colSize) {
+    if (row >= 0 && row < rowSize && col >= 0 && col < colSize 
+        && pos.y >= (startY + blockHeight * row) + (blockHeight / 10) 
+        && pos.y <= (startY + blockHeight * (row + 1)) - (blockHeight / 10)
+        && pos.x >= (startX + blockWidth * col) + (blockWidth / 10)
+        && pos.x <= (startX + blockWidth * (col + 1)) + (blockWidth / 10)) {
       return { 
         row: row, 
         col: col, 

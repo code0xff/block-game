@@ -28,6 +28,10 @@ const BlockTypes = [
 let startBlock;
 let selectedBlocks = [];
 
+let totalScore = 0;
+let score = 0;
+let maxScore = 0;
+
 const board = {
   initBoard: function () {
     for (var i = 0; i < option.rowSize; i++) {
@@ -66,6 +70,7 @@ const board = {
   },
   resolve: function() {
     if (selectedBlocks.length > 2) {
+      let sumOfScore = 0;
       const blockTypeSize = BlockTypes.length;
       for (let i = 0; i < selectedBlocks.length; i++) {
         const removeBlock = calculate.decodeId(selectedBlocks[i]);
@@ -77,7 +82,17 @@ const board = {
           draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
             BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
         }, 50 * i);
+        sumOfScore += ((i + 1) * 10);
       }
+
+      totalScore += sumOfScore;
+      score = sumOfScore;
+      if (score > maxScore) {
+        maxScore = score;
+      }
+      document.getElementById('totalScore').innerHTML = 'total score: ' + totalScore; 
+      document.getElementById('score').innerHTML = 'score: ' + score; 
+      document.getElementById('maxScore').innerHTML = 'max score: ' + maxScore; 
     }
     startBlock = null;
     selectedBlocks = [];
