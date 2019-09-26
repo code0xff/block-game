@@ -1,6 +1,6 @@
 const calculate = {
   getSelectedBlock: function(pos, blockWidth, blockHeight, startX, startY, rowSize, colSize) {
-    const adjustValue = 10;
+    const adjustValue = 15;
     const row = Math.floor((pos.y - startY) / blockHeight);
     const col = Math.floor((pos.x - startX) / blockWidth);
     if (row >= 0 && row < rowSize && col >= 0 && col < colSize 
