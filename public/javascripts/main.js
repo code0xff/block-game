@@ -60,6 +60,7 @@ const board = {
     for (let i = 0; i < option.rowSize; i++) {
       for (let j = 0; j < option.colSize; j++) {
         draw.drawRoundedRect(boardContext, x, y, blockWidth, blockHeight, blockWidth / 4, BlockTypes[boardArray[i][j].type], 'fill');
+        draw.drawRoundedRect(boardContext, x, y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
         x += blockWidth;
       }
       x = startX;
@@ -79,6 +80,7 @@ const board = {
           boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
           draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
             BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
+          draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
         }, 50 * i);
         sumOfScore += (i + 1);
       }
