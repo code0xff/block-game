@@ -123,7 +123,7 @@ const image = {
 const text = {
   title: function() {
     draw.removeText(context, startX, blockHeight, boardWidth, blockHeight);
-    draw.drawText(context, "Gain Elemental Energy..." + time, startX, blockHeight, fontSize, "sans-serif", "#ffffff");
+    draw.drawText(context, "Gather Elemental Energy..." + time, startX, blockHeight, fontSize, "sans-serif", "#ffffff");
   },
   remove: function(type) {
     let removeWidth = (parseInt(Math.log10(energy[type].value)) + 1) * fontSize;
