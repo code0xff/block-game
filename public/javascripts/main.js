@@ -1,5 +1,5 @@
 let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (middle term), 3 (arcade)
-let time = 100;
+let time = 1;
 
 let canvas;
 let context;
@@ -150,7 +150,6 @@ const text = {
     }
   },
   midtermText: function() {
-    console.log("mid");
     draw.drawText(context, "You're finally ready to fight...", startX, blockHeight, fontSize, "cursive", "#ffffff");
     energy[1].x = parseInt(canvas.width / 5);
     energy[2].x = parseInt(canvas.width / 5);
@@ -166,6 +165,7 @@ const text = {
     for (let i = 1; i < energy.length; i++) {
       draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "cursive", BlockTypes[i]);
     }
+    draw.drawText(context, "Please tab screen...", startX, canvas.width, fontSize, "cursive", "#ffffff");
   }
 }
 
@@ -226,6 +226,8 @@ const main = {
             selectedBlocks.push(startBlock.row + '' + startBlock.col);
           }
         }
+      } else if (gameMode === 2) {
+        draw.removeAll(canvas);
       }
     }, false);
 
@@ -275,42 +277,34 @@ const main = {
 
     canvas.addEventListener("touchstart", function (e) {
       e.preventDefault();
-      if (gameMode === 1) {
-        const touch = e.touches[0];
-        const mouseEvent = new MouseEvent("mousedown", {
-          clientX: touch.clientX,
-          clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-      }
+      const touch = e.touches[0];
+      const mouseEvent = new MouseEvent("mousedown", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
     });
 
     canvas.addEventListener("touchend", function (e) {
       e.preventDefault();
-      if (gameMode === 1) {
-        var mouseEvent = new MouseEvent("mouseup", {});
-        canvas.dispatchEvent(mouseEvent);
-      }
+      var mouseEvent = new MouseEvent("mouseup", {});
+      canvas.dispatchEvent(mouseEvent);
     }, false);
 
     canvas.addEventListener("touchmove", function (e) {
       e.preventDefault();
-      if (gameMode === 1) {
-        var touch = e.touches[0];
-        var mouseEvent = new MouseEvent("mousemove", {
-          clientX: touch.clientX,
-          clientY: touch.clientY
-        });
-        canvas.dispatchEvent(mouseEvent);
-      }
+      var touch = e.touches[0];
+      var mouseEvent = new MouseEvent("mousemove", {
+        clientX: touch.clientX,
+        clientY: touch.clientY
+      });
+      canvas.dispatchEvent(mouseEvent);
     }, false);
 
     canvas.addEventListener("touchcancel", function (e) {
       e.preventDefault();
-      if (gameMode === 1) {
-        var mouseEvent = new MouseEvent("mouseout", {});
-        canvas.dispatchEvent(mouseEvent);
-      }
+      var mouseEvent = new MouseEvent("mouseout", {});
+      canvas.dispatchEvent(mouseEvent);
     }, false);
   }
 }
