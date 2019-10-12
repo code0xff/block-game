@@ -151,8 +151,8 @@ const text = {
   },
   midtermText: function() {
     draw.drawText(context, "You're finally ready to fight...", startX, blockHeight, fontSize, "sans-serif", "#ffffff");
-    energy[1].x = parseInt(canvas.width / 5);
-    energy[2].x = parseInt(canvas.width / 5);
+    energy[1].x = parseInt(canvas.width / 4);
+    energy[2].x = parseInt(canvas.width / 4);
     energy[3].x = parseInt(canvas.width / 4) * 2;
     energy[4].x = parseInt(canvas.width / 4) * 3;
     energy[5].x = parseInt(canvas.width / 4) * 3;
