@@ -19,7 +19,7 @@ const draw = {
       context.fill();
     }
   },
-  drawBlockPath: function(context, fromX, fromY, toX, toY) {
+  drawBlockPath: function(context, fromX, fromY, toX, toY, lineWidth) {
     context.fillStyle = "#000000";
     context.beginPath();
     context.lineWidth = 5;

@@ -260,7 +260,7 @@ const main = {
                 const secondBlock = calculate.decodeId(selectedBlocks[i + 1]);
                 const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
                 
-                draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
+                draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, parseInt(blockWidth / 5) * 2);
               }
             } else if (selectedBlocks.length > 3) {
               const firstBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 2]);
@@ -268,7 +268,7 @@ const main = {
               const secondBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
               const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
               
-              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
+              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, parseInt(blockWidth / 5) * 2);
             }
           }
         }
