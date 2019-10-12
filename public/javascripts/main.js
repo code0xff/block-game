@@ -1,7 +1,13 @@
+let gameMode = 0; // game mode: 0 (start), 1 (puzzle), 2 (arcade)
+let time = 180;
+
+let energy = [ 0, 0, 0, 0, 0, 0 ];
+
 let boardCanvas;
-let boardContext;
+let context;
 let boardWidth;
 let boardHeight;
+let fontSize;
 
 const option = {
   rowSize: 7,
@@ -15,20 +21,16 @@ let startX;
 let startY;
 
 const BlockTypes = [
-  '#ffffff', // empty
-  '#F4FA58', // yello
-  '#FF4000', // red
-  '#4CAF50', // green
-  '#008CBA', // blue
-  '#555555' // black
+  '#ffffff', // empty (void)
+  '#F4FA58', // yello (light)
+  '#555555', // black (darkness)
+  '#FF4000', // red (fire)
+  '#008CBA', // blue (ice)
+  '#4CAF50'  // green (earth)
 ];
 
 let startBlock;
 let selectedBlocks = [];
-
-let totalScore = 0;
-let score = 0;
-let maxScore = 0;
 
 const board = {
   initBoard: function () {
@@ -48,19 +50,22 @@ const board = {
       }
     }
   },
-  draw: function() {
+  drawBoard: function() {
     blockWidth = parseInt(boardWidth / (option.colSize + 1));
     blockHeight = parseInt(boardHeight / (option.rowSize + 1));
+
+    fontSize = parseInt(blockHeight / 2);
+
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
-    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2);
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + blockHeight;
 
     let x = startX;
     let y = startY;
 
     for (let i = 0; i < option.rowSize; i++) {
       for (let j = 0; j < option.colSize; j++) {
-        draw.drawRoundedRect(boardContext, x, y, blockWidth, blockHeight, blockWidth / 4, BlockTypes[boardArray[i][j].type], 'fill');
-        draw.drawRoundedRect(boardContext, x, y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
+        draw.drawRoundedRect(context, x, y, blockWidth, blockHeight, blockWidth / 4, BlockTypes[boardArray[i][j].type], 'fill');
+        draw.drawRoundedRect(context, x, y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
         x += blockWidth;
       }
       x = startX;
@@ -69,33 +74,39 @@ const board = {
   },
   resolve: function() {
     if (selectedBlocks.length > 2) {
-      let sumOfScore = 0;
       const blockTypeSize = BlockTypes.length;
+      let sumOfEnergy = 0;
+      let energyType = boardArray[startBlock.row][startBlock.col].type;
       for (let i = 0; i < selectedBlocks.length; i++) {
         const removeBlock = calculate.decodeId(selectedBlocks[i]);
         boardArray[removeBlock.row][removeBlock.col].type = 0;
         const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
+        sumOfEnergy += (i + 1);
         setTimeout(function(){
-          draw.removeBlock(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+          draw.removeBlock(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
           boardArray[removeBlock.row][removeBlock.col] = { type: parseInt(Math.random() * (blockTypeSize - 1)) + 1 };
-          draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
+          draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
             BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
-          draw.drawRoundedRect(boardContext, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
+          draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
         }, 50 * i);
-        sumOfScore += (i + 1);
       }
-
-      totalScore += sumOfScore;
-      score = sumOfScore;
-      if (score > maxScore) {
-        maxScore = score;
-      }
-      document.getElementById('totalScore').innerHTML = 'total score: ' + totalScore; 
-      document.getElementById('score').innerHTML = 'score: ' + score; 
-      document.getElementById('maxScore').innerHTML = 'max score: ' + maxScore; 
+      energy[energyType] += sumOfEnergy;
+      console.log(energy);
     }
     startBlock = null;
     selectedBlocks = [];
+  }
+}
+
+const image = {
+  drawWizard: function() {
+    draw.drawImage(context, parseInt(boardWidth / 2) - blockWidth, boardWidth + blockHeight, 96, 96, "assets/green_wizard_back-48px.png");
+  }
+}
+
+const text = {
+  title: function() {
+    draw.drawText(context, "Gain Elemental Energy...", startX, blockHeight, "", fontSize + "px", "cursive");
   }
 }
 
@@ -103,7 +114,9 @@ const game = {
   start: function () {
     board.initBoard();
     board.setBlocksOnBoard();
-    board.draw();
+    board.drawBoard();
+    image.drawWizard();
+    text.title();
   }
 }
 
@@ -118,9 +131,9 @@ const main = {
       boardCanvas.height = displayHeight;
     }
     boardWidth = boardCanvas.width;
-    boardHeight = boardCanvas.height;
+    boardHeight = boardCanvas.width;
 
-    boardContext = boardCanvas.getContext("2d");
+    context = boardCanvas.getContext("2d");
 
     boardCanvas.addEventListener("mousedown", function (e) {
       if (selectedBlocks.length !== 0) {
@@ -158,7 +171,7 @@ const main = {
               const secondBlock = calculate.decodeId(selectedBlocks[i + 1]);
               const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
               
-              draw.drawBlockPath(boardContext, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
+              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
             }
           } else if (selectedBlocks.length > 3) {
             const firstBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 2]);
@@ -166,7 +179,7 @@ const main = {
             const secondBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
             const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
             
-            draw.drawBlockPath(boardContext, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
+            draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y);
           }
         }
       }
