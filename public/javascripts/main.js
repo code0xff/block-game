@@ -123,7 +123,7 @@ const image = {
 const text = {
   title: function() {
     draw.removeText(context, startX, blockHeight, boardWidth, blockHeight);
-    draw.drawText(context, "Gain Elemental Energy..." + time, startX, blockHeight, fontSize, "cursive", "#ffffff");
+    draw.drawText(context, "Gain Elemental Energy..." + time, startX, blockHeight, fontSize, "sans-serif", "#ffffff");
   },
   remove: function(type) {
     let removeWidth = (parseInt(Math.log10(energy[type].value)) + 1) * fontSize;
@@ -131,7 +131,7 @@ const text = {
     draw.removeText(context, energy[type].x, energy[type].y, removeWidth, removeHeight);
   },
   energy: function(value, x, y, type) {
-    draw.drawText(context, value, x, y, fontSize, "cursive", BlockTypes[type]);
+    draw.drawText(context, value, x, y, fontSize, "sans-serif", BlockTypes[type]);
   },
   initEnergy: function() {
     energy[1].x = startX + blockWidth;
@@ -146,11 +146,11 @@ const text = {
     energy[5].y = boardHeight + (3 * blockHeight);
 
     for (let i = 1; i < energy.length; i++) {
-      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "cursive", BlockTypes[i]);
+      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "sans-serif", BlockTypes[i]);
     }
   },
   midtermText: function() {
-    draw.drawText(context, "You're finally ready to fight...", startX, blockHeight, fontSize, "cursive", "#ffffff");
+    draw.drawText(context, "You're finally ready to fight...", startX, blockHeight, fontSize, "sans-serif", "#ffffff");
     energy[1].x = parseInt(canvas.width / 5);
     energy[2].x = parseInt(canvas.width / 5);
     energy[3].x = parseInt(canvas.width / 4) * 2;
@@ -163,9 +163,9 @@ const text = {
     energy[4].y = parseInt(canvas.width / 8) * 3;
     energy[5].y = parseInt(canvas.width / 8) * 5;
     for (let i = 1; i < energy.length; i++) {
-      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "cursive", BlockTypes[i]);
+      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "sans-serif", BlockTypes[i]);
     }
-    draw.drawText(context, "Please tab screen...", startX, canvas.width, fontSize, "cursive", "#ffffff");
+    draw.drawText(context, "Please tab screen...", startX, canvas.width, fontSize, "sans-serif", "#ffffff");
   }
 }
 
