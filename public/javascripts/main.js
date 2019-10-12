@@ -1,5 +1,5 @@
 let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (middle term), 3 (arcade)
-let time = 1;
+let time = 100;
 
 let canvas;
 let context;
