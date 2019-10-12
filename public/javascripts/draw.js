@@ -37,9 +37,15 @@ const draw = {
     }
     image.src = imageSource;
   },
-  drawText: function(context, text, x, y, textStyle, textSize, font) {
-    context.fillStyle = "#ffffff";
-    context.font = textStyle + " " + textSize + " " + font;
+  drawText: function(context, text, x, y, fontSize, font, fontColor) {
+    context.fillStyle = fontColor;
+    context.font = fontSize + "px " + font;
     context.fillText(text, x, y);
+  },
+  removeText: function(context, x, y, width, height) {
+    context.clearRect(x, y - height, width, height);
+  },
+  removeAll: function(canvas) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 }

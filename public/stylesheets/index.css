@@ -6,13 +6,8 @@ html, body {
   background: black;
 }
 
-.canvas-board {
+.game-canvas {
   width: 100vw;
   height: 100vh;
   display: block;
-}
-
-.score {
-  text-align: center;
-  color: white;
 }
