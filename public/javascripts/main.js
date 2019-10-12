@@ -1,4 +1,4 @@
-let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (middle term), 3 (arcade)
+let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (end)
 let time = 100;
 
 let canvas;
@@ -18,8 +18,17 @@ let blockHeight;
 let startX;
 let startY;
 
+let characterX;
+let characterY;
 let characterSize;
+
 let timer;
+let timerX;
+let timerY;
+
+let enemy;
+let enemyX;
+let enemyY;
 
 const BlockTypes = [
   '#ffffff', // empty (void)
@@ -28,15 +37,6 @@ const BlockTypes = [
   '#FF4000', // red (fire)
   '#008CBA', // blue (ice)
   '#4CAF50'  // green (earth)
-];
-
-const energy = [ 
-  { value: 0, x: 0, y: 0 },
-  { value: 0, x: 0, y: 0 },
-  { value: 0, x: 0, y: 0 },
-  { value: 0, x: 0, y: 0 },
-  { value: 0, x: 0, y: 0 },
-  { value: 0, x: 0, y: 0 }
 ];
 
 let startBlock;
@@ -68,7 +68,16 @@ const board = {
     characterSize = blockWidth * 2;
 
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
-    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + blockHeight;
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + characterSize + parseInt(blockHeight / 2);
+
+    characterX = startX;
+    characterY = startX;
+
+    enemyX = boardWidth - characterSize - startX;
+    enemyY = startX;
+
+    timerX = startX;
+    timerY = boardHeight + characterSize + blockHeight;
 
     let x = startX;
     let y = startY;
@@ -99,73 +108,26 @@ const board = {
           BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
         draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
       }
-      energy[energyType].value += sumOfEnergy;
-      text.remove(energyType);
-      text.energy(energy[energyType].value, energy[energyType].x, energy[energyType].y, energyType);
+      console.log(energyType, sumOfEnergy);
     }
     startBlock = null;
     selectedBlocks = [];
   }
 }
 
-const image = {
-  drawWizard: function() {
-    draw.drawImage(context, 
-      parseInt(canvas.width / 2) - parseInt(characterSize / 2), parseInt(canvas.width / 2) - parseInt(characterSize / 2), 
-      characterSize, characterSize, 
-      "assets/green_wizard2_front-48px.png");
-  },
-  drawWizardBack: function() {
-    draw.drawImage(context, parseInt(boardWidth / 2) - blockWidth, boardWidth + blockHeight, characterSize, characterSize, "assets/green_wizard_back-48px.png");
+const text = {
+  time: function() {
+    draw.removeText(context, 0, timerY, boardWidth, blockHeight);
+    draw.drawText(context, time + " seconds left...", timerX, timerY, fontSize, "sans-serif", "#ffffff");
   }
 }
 
-const text = {
-  title: function() {
-    draw.removeText(context, startX, blockHeight, boardWidth, blockHeight);
-    draw.drawText(context, "Gather Elemental Energy..." + time, startX, blockHeight, fontSize, "sans-serif", "#ffffff");
+const image = {
+  wizard: function() {
+    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/green_wizard_left2-48px.png")
   },
-  remove: function(type) {
-    let removeWidth = (parseInt(Math.log10(energy[type].value)) + 1) * fontSize;
-    let removeHeight = fontSize;
-    draw.removeText(context, energy[type].x, energy[type].y, removeWidth, removeHeight);
-  },
-  energy: function(value, x, y, type) {
-    draw.drawText(context, value, x, y, fontSize, "sans-serif", BlockTypes[type]);
-  },
-  initEnergy: function() {
-    energy[1].x = startX + blockWidth;
-    energy[1].y = boardHeight + (2 * blockHeight);
-    energy[2].x = startX + blockWidth;
-    energy[2].y = boardHeight + (3 * blockHeight);
-    energy[3].x = startX + (blockWidth * 3);
-    energy[3].y = boardHeight + (4 * blockHeight);
-    energy[4].x = startX + (blockWidth * 5);
-    energy[4].y = boardHeight + (2 * blockHeight);
-    energy[5].x = startX + (blockWidth * 5);
-    energy[5].y = boardHeight + (3 * blockHeight);
-
-    for (let i = 1; i < energy.length; i++) {
-      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "sans-serif", BlockTypes[i]);
-    }
-  },
-  midtermText: function() {
-    draw.drawText(context, "You're finally ready to fight...", startX, blockHeight, fontSize, "sans-serif", "#ffffff");
-    energy[1].x = parseInt(canvas.width / 5);
-    energy[2].x = parseInt(canvas.width / 5);
-    energy[3].x = parseInt(canvas.width / 2);
-    energy[4].x = parseInt(canvas.width / 5) * 4;
-    energy[5].x = parseInt(canvas.width / 5) * 4;
-
-    energy[1].y = parseInt(canvas.width / 8) * 3;
-    energy[2].y = parseInt(canvas.width / 8) * 5;
-    energy[3].y = parseInt(canvas.width / 4);
-    energy[4].y = parseInt(canvas.width / 8) * 3;
-    energy[5].y = parseInt(canvas.width / 8) * 5;
-    for (let i = 1; i < energy.length; i++) {
-      draw.drawText(context, energy[i].value, energy[i].x, energy[i].y, fontSize, "sans-serif", BlockTypes[i]);
-    }
-    draw.drawText(context, "Please tab screen...", startX, canvas.width, fontSize, "sans-serif", "#ffffff");
+  enemy: function() {
+    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/dark-48px.png")
   }
 }
 
@@ -174,29 +136,23 @@ const game = {
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
-    image.drawWizardBack();
+    image.wizard();
+    image.enemy();
 
-    text.title();
+    text.time();
     timer = setInterval(function() {
       time -= 1;
       if (time >= 0) {
-        text.title();
+        text.time();
       } else {
         game.endPuzzle();
       }
     }, 1000);
-    text.initEnergy();
   },
   endPuzzle: function() {
     gameMode = 2;
     clearInterval(timer);
     board.resolve();
-    draw.removeAll(canvas);
-    game.midtermStart();
-  },
-  midtermStart: function() {
-    image.drawWizard();
-    text.midtermText();
   }
 }
 
@@ -226,8 +182,6 @@ const main = {
             selectedBlocks.push(startBlock.row + '' + startBlock.col);
           }
         }
-      } else if (gameMode === 2) {
-        draw.removeAll(canvas);
       }
     }, false);
 
