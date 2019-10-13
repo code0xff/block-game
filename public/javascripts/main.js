@@ -35,6 +35,8 @@ const hpBarHeight = 5;
 
 let pathWidth;
 
+const animationTime = 300;
+
 const BlockTypes = [
   '#ffffff', // empty (void)
   '#F4FA58', // yello (light)
@@ -66,7 +68,7 @@ const wizard = {
     image.wizard("green_wizard_left")
     setTimeout(function() {
       wizard.ready();
-    }, 500);
+    }, animationTime);
   }
 }
 
