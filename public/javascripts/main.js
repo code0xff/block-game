@@ -1,5 +1,5 @@
 let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (end)
-let time = 100;
+let time = 180;
 
 let canvas;
 let context;
@@ -27,6 +27,7 @@ let timerX;
 let timerY;
 
 let enemy;
+let enemyHP;
 let enemyX;
 let enemyY;
 
@@ -37,6 +38,15 @@ const BlockTypes = [
   '#FF4000', // red (fire)
   '#008CBA', // blue (ice)
   '#4CAF50'  // green (earth)
+];
+
+const EnemyTypes = [
+  'empty',
+  'light',
+  'dark',
+  'fire',
+  'ice',
+  'earth'
 ];
 
 let startBlock;
@@ -118,7 +128,7 @@ const board = {
 const text = {
   time: function() {
     draw.removeText(context, 0, timerY, boardWidth, blockHeight);
-    draw.drawText(context, time + " seconds left...", timerX, timerY, fontSize, "sans-serif", "#ffffff");
+    draw.drawText(context, time + " second(s) left...", timerX, timerY, fontSize, "sans-serif", "#ffffff");
   }
 }
 
