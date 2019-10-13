@@ -37,6 +37,16 @@ const draw = {
     }
     image.src = imageSource;
   },
+  removeImage: function(context, x, y, width, height) {
+    context.clearRect(x, y, width, height);
+  },
+  drawEnergyBar: function(context, x, y, fullWidth, valueWidth, height) {
+    draw.drawRoundedRect(context, x, y, fullWidth, height, 0, '#555555', 'fill');
+    draw.drawRoundedRect(context, x, y, valueWidth, height, 0, '#FF0000', 'fill');
+  },
+  removeEnergyBar: function(context, width, height) {
+    context.clearRect(0, 0, width, height);
+  },
   drawText: function(context, text, x, y, fontSize, font, fontColor) {
     context.fillStyle = fontColor;
     context.font = fontSize + "px " + font;

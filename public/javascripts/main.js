@@ -26,10 +26,14 @@ let timer;
 let timerX;
 let timerY;
 
-let enemy;
-let enemyHP;
+let selectedEnemy = { type: 0, image: 'void', hp: 0 };
 let enemyX;
 let enemyY;
+
+let hpBarWidth;
+const hpBarHeight = 5;
+
+let pathWidth;
 
 const BlockTypes = [
   '#ffffff', // empty (void)
@@ -41,16 +45,36 @@ const BlockTypes = [
 ];
 
 const EnemyTypes = [
-  'empty',
-  'light',
-  'dark',
-  'fire',
-  'ice',
-  'earth'
+  { type: 0, image: 'void', hp: 0 },
+  { type: 1, image: 'light', hp: 250 },
+  { type: 2, image: 'dark', hp: 250 },
+  { type: 3, image: 'fire', hp: 250 },
+  { type: 4, image: 'ice', hp: 250 },
+  { type: 5, image: 'earth', hp: 250 }  
 ];
 
 let startBlock;
 let selectedBlocks = [];
+
+const enemy = {
+  create: function() {
+    const enemyType = parseInt(Math.random() * (EnemyTypes.length - 1)) + 1;
+    selectedEnemy.type = enemyType;
+    selectedEnemy.image = EnemyTypes[enemyType].image;
+    selectedEnemy.hp = EnemyTypes[enemyType].hp;
+    image.enemy(selectedEnemy.image);
+    image.enemyHp(EnemyTypes[enemyType].hp, selectedEnemy.hp);
+  },
+  damage: function(type, value) {
+    selectedEnemy.hp -= value;
+    if (selectedEnemy.hp >= 0) {
+      image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
+    } else {
+      draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
+      enemy.create();
+    }
+  }
+}
 
 const board = {
   initBoard: function () {
@@ -89,6 +113,8 @@ const board = {
     timerX = startX;
     timerY = boardHeight + characterSize + blockHeight;
 
+    pathWidth = parseInt(blockWidth / 5) * 2;
+
     let x = startX;
     let y = startY;
 
@@ -118,7 +144,7 @@ const board = {
           BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
         draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
       }
-      console.log(energyType, sumOfEnergy);
+      enemy.damage(energyType, sumOfEnergy);
     }
     startBlock = null;
     selectedBlocks = [];
@@ -134,20 +160,25 @@ const text = {
 
 const image = {
   wizard: function() {
-    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/green_wizard_left2-48px.png")
+    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/green_wizard_left2-48px.png");
   },
-  enemy: function() {
-    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/dark-48px.png")
+  enemy: function(image) {
+    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + image + "-48px.png");
+  },
+  enemyHp: function(fullHp, hp) {
+    const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
+    draw.removeEnergyBar(context, hpBarWidth, hpBarHeight);
+    draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight);
   }
 }
 
 const game = {
-  startPuzzle: function () {
+  start: function () {
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
     image.wizard();
-    image.enemy();
+    enemy.create();
 
     text.time();
     timer = setInterval(function() {
@@ -155,11 +186,11 @@ const game = {
       if (time >= 0) {
         text.time();
       } else {
-        game.endPuzzle();
+        game.end();
       }
     }, 1000);
   },
-  endPuzzle: function() {
+  end: function() {
     gameMode = 2;
     clearInterval(timer);
     board.resolve();
@@ -178,6 +209,7 @@ const main = {
     }
     boardWidth = canvas.width;
     boardHeight = canvas.width;
+    hpBarWidth = canvas.width;
 
     context = canvas.getContext("2d");
 
@@ -224,7 +256,7 @@ const main = {
                 const secondBlock = calculate.decodeId(selectedBlocks[i + 1]);
                 const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
                 
-                draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, parseInt(blockWidth / 5) * 2);
+                draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, pathWidth);
               }
             } else if (selectedBlocks.length > 3) {
               const firstBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 2]);
@@ -232,7 +264,7 @@ const main = {
               const secondBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
               const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
               
-              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, parseInt(blockWidth / 5) * 2);
+              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, pathWidth);
             }
           }
         }
@@ -274,4 +306,4 @@ const main = {
 }
 
 main.init();
-game.startPuzzle();
+game.start();
