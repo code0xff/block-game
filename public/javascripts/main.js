@@ -56,6 +56,20 @@ const EnemyTypes = [
 let startBlock;
 let selectedBlocks = [];
 
+const wizard = {
+  ready: function() {
+    draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+    image.wizard("green_wizard_left2");
+  },
+  attack: function() {
+    draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+    image.wizard("green_wizard_left")
+    setTimeout(function() {
+      wizard.ready();
+    }, 500);
+  }
+}
+
 const enemy = {
   create: function() {
     const enemyType = parseInt(Math.random() * (EnemyTypes.length - 1)) + 1;
@@ -67,7 +81,7 @@ const enemy = {
   },
   damage: function(type, value) {
     selectedEnemy.hp -= value;
-    if (selectedEnemy.hp >= 0) {
+    if (selectedEnemy.hp > 0) {
       image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
     } else {
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
@@ -144,6 +158,7 @@ const board = {
           BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
         draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
       }
+      wizard.attack();
       enemy.damage(energyType, sumOfEnergy);
     }
     startBlock = null;
@@ -153,14 +168,14 @@ const board = {
 
 const text = {
   time: function() {
-    draw.removeText(context, 0, timerY, boardWidth, blockHeight);
+    draw.removeText(context, 0, timerY, boardWidth, fontSize);
     draw.drawText(context, time + " second(s) left...", timerX, timerY, fontSize, "sans-serif", "#ffffff");
   }
 }
 
 const image = {
-  wizard: function() {
-    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/green_wizard_left2-48px.png");
+  wizard: function(image) {
+    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/" + image + "-48px.png");
   },
   enemy: function(image) {
     draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + image + "-48px.png");
@@ -177,7 +192,7 @@ const game = {
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
-    image.wizard();
+    wizard.ready();
     enemy.create();
 
     text.time();

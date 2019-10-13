@@ -53,7 +53,7 @@ const draw = {
     context.fillText(text, x, y);
   },
   removeText: function(context, x, y, width, height) {
-    context.clearRect(x, y - height, width, height);
+    context.clearRect(x, y - height, width, parseInt(2 * height));
   },
   removeAll: function(canvas) {
     context.clearRect(0, 0, canvas.width, canvas.height);
