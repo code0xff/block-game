@@ -47,12 +47,12 @@ const BlockTypes = [
 ];
 
 const EnemyTypes = [
-  { type: 0, image: 'void', hp: 0 },
-  { type: 1, image: 'light', hp: 250 },
-  { type: 2, image: 'dark', hp: 250 },
-  { type: 3, image: 'fire', hp: 250 },
-  { type: 4, image: 'ice', hp: 250 },
-  { type: 5, image: 'earth', hp: 250 }  
+  { type: 0, image: 'void', hp: 0, critical: [], immune: [] },
+  { type: 1, image: 'light', hp: 250, critical: [2], immune: [1] },
+  { type: 2, image: 'dark', hp: 250, critical: [1], immune: [2] },
+  { type: 3, image: 'fire', hp: 250, critical: [4], immune: [5] },
+  { type: 4, image: 'ice', hp: 250, critical: [5], immune: [3] },
+  { type: 5, image: 'earth', hp: 250, critical: [3], immune: [4] }
 ];
 
 let startBlock;
@@ -82,6 +82,11 @@ const enemy = {
     image.enemyHp(EnemyTypes[enemyType].hp, selectedEnemy.hp);
   },
   damage: function(type, value) {
+    if (EnemyTypes[selectedEnemy.type].critical.indexOf(type) !== -1) {
+      value *= 2;
+    } else if (EnemyTypes[selectedEnemy.type].immune.indexOf(type) !== -1) {
+      value = 0;
+    }
     selectedEnemy.hp -= value;
     if (selectedEnemy.hp > 0) {
       image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
