@@ -46,6 +46,15 @@ const BlockTypes = [
   '#4CAF50'  // green (earth)
 ];
 
+const EffectTypes = [
+  { type: 0, image: 'void' },
+  { type: 1, image: 'light' },
+  { type: 2, image: 'dark' },
+  { type: 3, image: 'fire' },
+  { type: 4, image: 'ice' },
+  { type: 5, image: 'earth' },
+];
+
 const EnemyTypes = [
   { type: 0, image: 'void', hp: 0, critical: [], immune: [] },
   { type: 1, image: 'light', hp: 200, critical: [2], immune: [1] },
@@ -90,6 +99,7 @@ const enemy = {
     selectedEnemy.hp -= value;
     if (selectedEnemy.hp > 0) {
       image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
+      image.effect(EffectTypes[type].image, EnemyTypes[selectedEnemy.type].image);
     } else {
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
       enemy.create();
@@ -191,6 +201,13 @@ const image = {
     const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
     draw.removeEnergyBar(context, hpBarWidth, hpBarHeight);
     draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight);
+  },
+  effect: function(effect, enemy) {
+    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + effect + "-effect-48px.png");
+    setTimeout(function() {
+      draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
+      draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + enemy + "-48px.png");
+    }, animationTime);
   }
 }
 
