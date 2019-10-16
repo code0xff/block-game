@@ -83,7 +83,7 @@ const wizard = {
       wizard.ready();
     }, animationTime);
   },
-  getMana: function() {
+  mana: function() {
     const displayedMp = parseInt(mpBarWidth * (mp / fullMp));
     draw.removeEnergyBar(context, 0, hpBarHeight, mpBarWidth, mpBarHeight);
     draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#0000ff");
@@ -91,6 +91,7 @@ const wizard = {
   magic: function() {
     if (mp >= fullMp) {
       mp = 0;
+      wizard.mana();
       board.setBlocksOnBoard();
       board.drawBoard();
       draw.removeImage(context, characterX, characterY, characterSize, characterSize);
@@ -126,7 +127,7 @@ const enemy = {
       if (mp > fullMp) {
         mp = fullMp;
       }
-      wizard.getMana();
+      wizard.mana();
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
       enemy.create();
     }
@@ -222,7 +223,7 @@ const game = {
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
-    wizard.getMana();
+    wizard.mana();
     wizard.ready();
     enemy.create();
 
