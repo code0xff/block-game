@@ -21,6 +21,8 @@ let startY;
 let characterX;
 let characterY;
 let characterSize;
+let mp = 0;
+const fullMp = 200;
 
 let timer;
 let timerX;
@@ -32,6 +34,8 @@ let enemyY;
 
 let hpBarWidth;
 const hpBarHeight = 5;
+let mpBarWidth;
+const mpBarHeight = 5;
 
 let pathWidth;
 
@@ -71,6 +75,7 @@ const wizard = {
   ready: function() {
     draw.removeImage(context, characterX, characterY, characterSize, characterSize);
     image.wizard("green_wizard_left2");
+    wizard.getMana();
   },
   attack: function() {
     draw.removeImage(context, characterX, characterY, characterSize, characterSize);
@@ -78,6 +83,14 @@ const wizard = {
     setTimeout(function() {
       wizard.ready();
     }, animationTime);
+  },
+  getMana: function() {
+    const displayedMp = parseInt(mpBarWidth * (mp / fullMp));
+    draw.removeEnergyBar(context, 0, hpBarHeight, mpBarWidth, mpBarHeight);
+    draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#0000ff");
+  },
+  magic: function() {
+
   }
 }
 
@@ -101,6 +114,11 @@ const enemy = {
       image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
       image.effect(EffectTypes[type].image, EnemyTypes[selectedEnemy.type].image);
     } else {
+      mp += (-selectedEnemy.hp);
+      if (mp > fullMp) {
+        mp = fullMp;
+      }
+      wizard.getMana();
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
       enemy.create();
     }
@@ -126,26 +144,6 @@ const board = {
     }
   },
   drawBoard: function() {
-    blockWidth = parseInt(boardWidth / (option.colSize + 1));
-    blockHeight = parseInt(boardHeight / (option.rowSize + 1));
-
-    fontSize = parseInt(blockHeight / 2);
-    characterSize = blockWidth * 2;
-
-    startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
-    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + characterSize + parseInt(blockHeight / 2);
-
-    characterX = startX;
-    characterY = startX;
-
-    enemyX = boardWidth - characterSize - startX;
-    enemyY = startX;
-
-    timerX = startX;
-    timerY = boardHeight + characterSize + blockHeight;
-
-    pathWidth = parseInt(blockWidth / 5) * 2;
-
     let x = startX;
     let y = startY;
 
@@ -199,8 +197,8 @@ const image = {
   },
   enemyHp: function(fullHp, hp) {
     const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
-    draw.removeEnergyBar(context, hpBarWidth, hpBarHeight);
-    draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight);
+    draw.removeEnergyBar(context, 0, 0, hpBarWidth, hpBarHeight);
+    draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight, "#ff0000");
   },
   effect: function(effect, enemy) {
     draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + effect + "-effect-48px.png");
@@ -246,10 +244,9 @@ const main = {
       canvas.width  = displayWidth;
       canvas.height = displayHeight;
     }
-    boardWidth = canvas.width;
-    boardHeight = canvas.width;
-    hpBarWidth = canvas.width;
 
+    main.setSize();
+   
     context = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", function (e) {
@@ -258,9 +255,11 @@ const main = {
           board.resolve();
         } else {
           const pos = calculate.getMousePos(canvas, e);
-          startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
-          if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
-            selectedBlocks.push(startBlock.row + '' + startBlock.col);
+          if (pos.x >= startX && pos.x <= startX + boardWidth && pos.y >= startY && startY + boardHeight) {
+            startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
+            if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
+              selectedBlocks.push(startBlock.row + '' + startBlock.col);
+            }
           }
         }
       }
@@ -341,6 +340,32 @@ const main = {
       var mouseEvent = new MouseEvent("mouseout", {});
       canvas.dispatchEvent(mouseEvent);
     }, false);
+  },
+  setSize: function() {
+    boardWidth = canvas.width;
+    boardHeight = canvas.width;
+    hpBarWidth = canvas.width;
+    mpBarWidth = canvas.width;
+
+    blockWidth = parseInt(boardWidth / (option.colSize + 1));
+    blockHeight = parseInt(boardHeight / (option.rowSize + 1));
+
+    fontSize = parseInt(blockHeight / 2);
+    characterSize = blockWidth * 2;
+
+    startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + characterSize + parseInt(blockHeight / 2);
+
+    characterX = startX;
+    characterY = startX;
+
+    enemyX = boardWidth - characterSize - startX;
+    enemyY = startX;
+
+    timerX = startX;
+    timerY = boardHeight + characterSize + blockHeight;
+
+    pathWidth = parseInt(blockWidth / 5) * 2;
   }
 }
 
