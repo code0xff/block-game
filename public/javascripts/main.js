@@ -75,11 +75,10 @@ const wizard = {
   ready: function() {
     draw.removeImage(context, characterX, characterY, characterSize, characterSize);
     image.wizard("green_wizard_left2");
-    wizard.getMana();
   },
   attack: function() {
     draw.removeImage(context, characterX, characterY, characterSize, characterSize);
-    image.wizard("green_wizard_left")
+    image.wizard("green_wizard_left");
     setTimeout(function() {
       wizard.ready();
     }, animationTime);
@@ -90,7 +89,16 @@ const wizard = {
     draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#0000ff");
   },
   magic: function() {
-
+    if (mp >= fullMp) {
+      mp = 0;
+      board.setBlocksOnBoard();
+      board.drawBoard();
+      draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+      image.wizard("green_wizard2_front");
+      setTimeout(function() {
+        wizard.ready();
+      }, animationTime);
+    }
   }
 }
 
@@ -214,6 +222,7 @@ const game = {
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
+    wizard.getMana();
     wizard.ready();
     enemy.create();
 
@@ -260,6 +269,8 @@ const main = {
             if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
               selectedBlocks.push(startBlock.row + '' + startBlock.col);
             }
+          } else if (pos.x >= characterX && pos.x <= characterX + characterSize && pos.y >= characterY &&  pos.y <= characterY + characterSize) {
+            wizard.magic();
           }
         }
       }
