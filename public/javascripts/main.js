@@ -22,7 +22,7 @@ let characterX;
 let characterY;
 let characterSize;
 let mp = 0;
-const fullMp = 200;
+const fullMp = 100;
 
 let timer;
 let timerX;
