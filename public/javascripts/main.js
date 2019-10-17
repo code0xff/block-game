@@ -61,11 +61,11 @@ const EffectTypes = [
 
 const EnemyTypes = [
   { type: 0, image: 'void', hp: 0, critical: [], immune: [] },
-  { type: 1, image: 'light', hp: 200, critical: [2], immune: [1] },
-  { type: 2, image: 'dark', hp: 200, critical: [1], immune: [2] },
-  { type: 3, image: 'fire', hp: 200, critical: [4], immune: [5] },
-  { type: 4, image: 'ice', hp: 200, critical: [5], immune: [3] },
-  { type: 5, image: 'earth', hp: 200, critical: [3], immune: [4] }
+  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1] },
+  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2] },
+  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5] },
+  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3] },
+  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4] }
 ];
 
 let startBlock;
