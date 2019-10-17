@@ -254,8 +254,8 @@ const game = {
     setTimeout(function() {
       draw.removeAll(canvas);
       image.endWizard();
-      draw.drawText(context, "You have defeated " + score + " monsters...", endMessageX, endMessageY,  "sans-serif", "#ffffff");
-      draw.drawText(context, "Very well...", endMessageX, endMessageY + fontSize,  "sans-serif", "#ffffff");
+      draw.drawText(context, "You have defeated " + score + " monsters...", endMessageX, endMessageY, fontSize,"sans-serif", "#ffffff");
+      draw.drawText(context, "Very well...", endMessageX, endMessageY + fontSize, fontSize, "sans-serif", "#ffffff");
     }, 1000);
   }
 }
