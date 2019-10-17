@@ -3,6 +3,7 @@ let time = 180;
 
 let canvas;
 let context;
+let gameWidth;
 let boardWidth;
 let boardHeight;
 let fontSize;
@@ -40,6 +41,10 @@ const mpBarHeight = 5;
 let pathWidth;
 
 const animationTime = 300;
+
+let score = 0;
+let endMessageX;
+let endMessageY;
 
 const BlockTypes = [
   '#ffffff', // empty (void)
@@ -129,6 +134,7 @@ const enemy = {
       }
       wizard.mana();
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
+      score += 1;
       enemy.create();
     }
   }
@@ -215,6 +221,9 @@ const image = {
       draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
       draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + enemy + "-48px.png");
     }, animationTime);
+  },
+  endWizard: function() {
+    draw.drawImage(context, parseInt((gameWidth - characterSize) / 2), characterY, characterSize, characterSize, "assets/green_wizard2_front-48px.png");
   }
 }
 
@@ -241,6 +250,13 @@ const game = {
     gameMode = 2;
     clearInterval(timer);
     board.resolve();
+
+    setTimeout(function() {
+      draw.removeAll(canvas);
+      image.endWizard();
+      draw.drawText(context, "You have defeated " + score + " monsters...", endMessageX, endMessageY,  "sans-serif", "#ffffff");
+      draw.drawText(context, "Very well...", endMessageX, endMessageY + fontSize,  "sans-serif", "#ffffff");
+    }, 1000);
   }
 }
 
@@ -265,7 +281,7 @@ const main = {
           board.resolve();
         } else {
           const pos = calculate.getMousePos(canvas, e);
-          if (pos.x >= startX && pos.x <= startX + boardWidth && pos.y >= startY && startY + boardHeight) {
+          if (pos.x >= startX && pos.x <= boardWidth - startX && pos.y >= startY && pos.y <= startY + boardHeight) {
             startBlock = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
             if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
               selectedBlocks.push(startBlock.row + '' + startBlock.col);
@@ -354,6 +370,7 @@ const main = {
     }, false);
   },
   setSize: function() {
+    gameWidth = canvas.width;
     boardWidth = canvas.width;
     boardHeight = canvas.width;
     hpBarWidth = canvas.width;
@@ -378,6 +395,9 @@ const main = {
     timerY = boardHeight + characterSize + blockHeight;
 
     pathWidth = parseInt(blockWidth / 5) * 2;
+
+    endMessageX = startX;
+    endMessageY = characterY + characterSize + (2 * fontSize);
   }
 }
 
