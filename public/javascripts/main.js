@@ -45,6 +45,31 @@ let score = 0;
 let endMessageX;
 let endMessageY;
 
+const title = {
+  text: 'Puzzle & Magic',
+  x: 0,
+  y: 0,
+  color: '#ffffff',
+  imageX: 0,
+  imageY: 0,
+  image: 'assets/green_wizard2_front-48px.png',
+  messageX: 0,
+  messageY: 0,
+  messageText: 'Please tab screen...'
+}
+
+const end = {
+  imageX: 0,
+  imageY: 0,
+  image: 'assets/green_wizard2_front-48px.png',
+  messageX: 0,
+  messageY: 0,
+  messageText: [
+    function(count) { return "You've defeated " + count + " monsters..."},
+    "Very well..."
+  ]
+}
+
 const BlockTypes = [
   '#ffffff', // empty (void)
   '#F4FA58', // yello (light)
@@ -214,9 +239,6 @@ const text = {
 }
 
 const image = {
-  button: function() {
-
-  },
   wizard: function(image) {
     draw.drawImage(context, character.x, character.y, character.size, character.size, "assets/" + image + "-48px.png");
   },
@@ -236,16 +258,21 @@ const image = {
     }, animationTime);
   },
   endWizard: function() {
-    draw.drawImage(context, parseInt((gameWidth - character.size) / 2), character.y, character.size, character.size, "assets/green_wizard2_front-48px.png");
+    draw.drawImage(context, end.imageX, end.imageY, character.size, character.size, "assets/green_wizard2_front-48px.png");
   }
 }
 
 const game = {
-  mode: 1, // game mode: 0 (start), 1 (puzzle), 2 (end)
+  mode: 0, // game mode: 0 (start), 1 (puzzle), 2 (end)
   menu: function() {
-
+    draw.removeAll(canvas);
+    draw.drawText(context, title.text, title.x, title.y, fontSize, "sans-serif", "#ffffff");
+    draw.drawImage(context, title.imageX, title.imageY, character.size, character.size, title.image);
+    draw.drawText(context, title.messageText, title.messageX, title.messageY, fontSize, "sans-serif", "#ffffff");
   },
   start: function () {
+    game.mode = 1;
+    draw.removeAll(canvas);
     board.initBoard();
     board.setBlocksOnBoard();
     board.drawBoard();
@@ -271,8 +298,8 @@ const game = {
     setTimeout(function() {
       draw.removeAll(canvas);
       image.endWizard();
-      draw.drawText(context, "You've defeated " + score + " monsters...", endMessageX, endMessageY, fontSize,"sans-serif", "#ffffff");
-      draw.drawText(context, "Very well...", endMessageX, endMessageY + fontSize, fontSize, "sans-serif", "#ffffff");
+      draw.drawText(context, end.messageText[0](score), end.messageX, end.messageY, fontSize, "sans-serif", "#ffffff");
+      draw.drawText(context, end.messageText[1], end.messageX, end.messageY + fontSize, fontSize, "sans-serif", "#ffffff");
     }, 1000);
   }
 }
@@ -293,7 +320,9 @@ const main = {
     context = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", function (e) {
-      if (game.mode === 1) {
+      if (game.mode === 0) {
+        game.start();
+      } else if (game.mode === 1) {
         if (selectedBlocks.length !== 0) {
           board.resolve();
         } else {
@@ -403,6 +432,14 @@ const main = {
     character.x = startX;
     character.y = startX;
 
+    title.imageX = parseInt((canvas.width - character.size) / 2);
+    title.imageY = parseInt((canvas.height - character.size) / 2);
+
+    title.x = startX;
+    title.y = title.imageY - fontSize;
+    title.messageX = startX;
+    title.messageY = title.imageY + character.size + (2 * fontSize);
+
     enemy.x = boardWidth - character.size - startX;
     enemy.y = startX;
 
@@ -411,10 +448,13 @@ const main = {
 
     pathWidth = parseInt(blockWidth / 5) * 2;
 
-    endMessageX = startX;
-    endMessageY = character.y + character.size + (2 * fontSize);
+    end.imageX = parseInt((canvas.width - character.size) / 2);
+    end.imageY = parseInt((canvas.height - character.size) / 2);
+
+    end.messageX = startX;
+    end.messageY = end.imageY + character.size + fontSize;
   }
 }
 
 main.init();
-game.start();
+game.menu();
