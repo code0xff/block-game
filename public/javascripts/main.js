@@ -174,7 +174,16 @@ const board = {
     }
   },
   resolve: function() {
-    if (selectedBlocks.length > 2) {
+    if (selectedBlocks.length === 2) {
+      for (let i = 0; i < selectedBlocks.length; i++) {
+        const removeBlock = calculate.decodeId(selectedBlocks[i]);
+        const removeBlockPos = calculate.getBlockStartPos(removeBlock.row, removeBlock.col, blockWidth, blockHeight, startX, startY);
+        draw.removeBlock(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight);
+        draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, 
+          BlockTypes[boardArray[removeBlock.row][removeBlock.col].type], 'fill');
+        draw.drawRoundedRect(context, removeBlockPos.x, removeBlockPos.y, blockWidth, blockHeight, blockWidth / 4, '#000000', 'stroke');
+      }
+    } else if (selectedBlocks.length > 2) {
       const blockTypeSize = BlockTypes.length;
       let sumOfEnergy = 0;
       let energyType = boardArray[startBlock.row][startBlock.col].type;
@@ -323,16 +332,14 @@ const main = {
           if (Math.abs(parseInt(prevBlock.row - blockOnPath.row)) <= 1 && Math.abs(parseInt(prevBlock.col - blockOnPath.col)) <= 1 
           && boardArray[prevBlock.row][prevBlock.col].type === boardArray[blockOnPath.row][blockOnPath.col].type) {
             selectedBlocks.push(blockOnPath.row + '' + blockOnPath.col);
-            if (selectedBlocks.length === 3) {
-              for (let i = 0; i < selectedBlocks.length - 1; i++) {
-                const firstBlock = calculate.decodeId(selectedBlocks[i]);
-                const firstBlockCenterPos = calculate.getBlockCenterPos(firstBlock.row, firstBlock.col, blockWidth, blockHeight, startX, startY);
-                const secondBlock = calculate.decodeId(selectedBlocks[i + 1]);
-                const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
-                
-                draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, pathWidth);
-              }
-            } else if (selectedBlocks.length > 3) {
+            if (selectedBlocks.length === 2) {
+              const firstBlock = calculate.decodeId(selectedBlocks[0]);
+              const firstBlockCenterPos = calculate.getBlockCenterPos(firstBlock.row, firstBlock.col, blockWidth, blockHeight, startX, startY);
+              const secondBlock = calculate.decodeId(selectedBlocks[1]);
+              const secondBlockCenterPos = calculate.getBlockCenterPos(secondBlock.row, secondBlock.col, blockWidth, blockHeight, startX, startY);
+              
+              draw.drawBlockPath(context, firstBlockCenterPos.x, firstBlockCenterPos.y, secondBlockCenterPos.x, secondBlockCenterPos.y, pathWidth);
+            } else if (selectedBlocks.length >= 3) {
               const firstBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 2]);
               const firstBlockCenterPos = calculate.getBlockCenterPos(firstBlock.row, firstBlock.col, blockWidth, blockHeight, startX, startY);
               const secondBlock = calculate.decodeId(selectedBlocks[selectedBlocks.length - 1]);
