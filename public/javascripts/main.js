@@ -1,4 +1,3 @@
-let gameMode = 1; // game mode: 0 (start), 1 (puzzle), 2 (end)
 let time = 180;
 
 let canvas;
@@ -19,19 +18,19 @@ let blockHeight;
 let startX;
 let startY;
 
-let characterX;
-let characterY;
-let characterSize;
-let mp = 0;
-const fullMp = 100;
+const character = {
+  x: 0,
+  y: 0,
+  size: 0,
+  mp: 0,
+  maxMp: 100
+}
 
 let timer;
 let timerX;
 let timerY;
 
 let selectedEnemy = { type: 0, image: 'void', hp: 0 };
-let enemyX;
-let enemyY;
 
 let hpBarWidth;
 const hpBarHeight = 5;
@@ -78,28 +77,28 @@ let selectedBlocks = [];
 
 const wizard = {
   ready: function() {
-    draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+    draw.removeImage(context, character.x, character.y, character.size, character.size);
     image.wizard("green_wizard_left2");
   },
   attack: function() {
-    draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+    draw.removeImage(context, character.x, character.y, character.size, character.size);
     image.wizard("green_wizard_left");
     setTimeout(function() {
       wizard.ready();
     }, animationTime);
   },
   mana: function() {
-    const displayedMp = parseInt(mpBarWidth * (mp / fullMp));
+    const displayedMp = parseInt(mpBarWidth * (character.mp / character.maxMp));
     draw.removeEnergyBar(context, 0, hpBarHeight, mpBarWidth, mpBarHeight);
     draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#0000ff");
   },
   magic: function() {
-    if (mp >= fullMp) {
-      mp = 0;
+    if (character.mp >= character.maxMp) {
+      character.mp = 0;
       wizard.mana();
       board.setBlocksOnBoard();
       board.drawBoard();
-      draw.removeImage(context, characterX, characterY, characterSize, characterSize);
+      draw.removeImage(context, character.x, character.y, character.size, character.size);
       image.wizard("green_wizard2_front");
       setTimeout(function() {
         wizard.ready();
@@ -109,6 +108,8 @@ const wizard = {
 }
 
 const enemy = {
+  x: 0,
+  y: 0,
   create: function() {
     const enemyType = parseInt(Math.random() * (EnemyTypes.length - 1)) + 1;
     selectedEnemy.type = enemyType;
@@ -128,12 +129,12 @@ const enemy = {
       image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
       image.effect(EffectTypes[type].image, EnemyTypes[selectedEnemy.type].image);
     } else {
-      mp += (-selectedEnemy.hp);
-      if (mp > fullMp) {
-        mp = fullMp;
+      character.mp += (-selectedEnemy.hp);
+      if (character.mp > character.maxMp) {
+        character.mp = character.maxMp;
       }
       wizard.mana();
-      draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
+      draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
       score += 1;
       enemy.create();
     }
@@ -204,30 +205,37 @@ const text = {
 }
 
 const image = {
+  button: function() {
+
+  },
   wizard: function(image) {
-    draw.drawImage(context, characterX, characterY, characterSize, characterSize, "assets/" + image + "-48px.png");
+    draw.drawImage(context, character.x, character.y, character.size, character.size, "assets/" + image + "-48px.png");
   },
   enemy: function(image) {
-    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + image + "-48px.png");
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + image + "-48px.png");
   },
   enemyHp: function(fullHp, hp) {
     const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
     draw.removeEnergyBar(context, 0, 0, hpBarWidth, hpBarHeight);
     draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight, "#ff0000");
   },
-  effect: function(effect, enemy) {
-    draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + effect + "-effect-48px.png");
+  effect: function(effectImage, enemyImage) {
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + effectImage + "-effect-48px.png");
     setTimeout(function() {
-      draw.removeImage(context, enemyX, enemyY, characterSize, characterSize);
-      draw.drawImage(context, enemyX, enemyY, characterSize, characterSize, "assets/" + enemy + "-48px.png");
+      draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
+      draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + enemyImage + "-48px.png");
     }, animationTime);
   },
   endWizard: function() {
-    draw.drawImage(context, parseInt((gameWidth - characterSize) / 2), characterY, characterSize, characterSize, "assets/green_wizard2_front-48px.png");
+    draw.drawImage(context, parseInt((gameWidth - character.size) / 2), character.y, character.size, character.size, "assets/green_wizard2_front-48px.png");
   }
 }
 
 const game = {
+  mode: 1, // game mode: 0 (start), 1 (puzzle), 2 (end)
+  menu: function() {
+
+  },
   start: function () {
     board.initBoard();
     board.setBlocksOnBoard();
@@ -247,7 +255,7 @@ const game = {
     }, 1000);
   },
   end: function() {
-    gameMode = 2;
+    game.mode = 2;
     clearInterval(timer);
     board.resolve();
 
@@ -276,7 +284,7 @@ const main = {
     context = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", function (e) {
-      if (gameMode === 1) {
+      if (game.mode === 1) {
         if (selectedBlocks.length !== 0) {
           board.resolve();
         } else {
@@ -286,7 +294,7 @@ const main = {
             if (startBlock.row !== -1 && startBlock.col !== -1 && boardArray[startBlock.row][startBlock.col].type > 0) {
               selectedBlocks.push(startBlock.row + '' + startBlock.col);
             }
-          } else if (pos.x >= characterX && pos.x <= characterX + characterSize && pos.y >= characterY &&  pos.y <= characterY + characterSize) {
+          } else if (pos.x >= character.x && pos.x <= character.x + character.size && pos.y >= character.y &&  pos.y <= character.y + character.size) {
             wizard.magic();
           }
         }
@@ -294,19 +302,19 @@ const main = {
     }, false);
 
     canvas.addEventListener("mouseup", function (e) {
-      if (gameMode === 1) {
+      if (game.mode === 1) {
         board.resolve();
       }
     }, false);
 
     canvas.addEventListener("mouseout", function (e) {
-      if (gameMode === 1) {
+      if (game.mode === 1) {
         board.resolve();
       }
     }, false);
 
     canvas.addEventListener("mousemove", function (e) {
-      if (gameMode === 1) {
+      if (game.mode === 1) {
         const pos = calculate.getMousePos(canvas, e);
         const blockOnPath = calculate.getSelectedBlock(pos, blockWidth, blockHeight, startX, startY, option.rowSize, option.colSize);
         if (blockOnPath.row !== -1 && blockOnPath.col !== -1 && boardArray[blockOnPath.row][blockOnPath.col].type !== 0
@@ -380,24 +388,24 @@ const main = {
     blockHeight = parseInt(boardHeight / (option.rowSize + 1));
 
     fontSize = parseInt(blockHeight / 2);
-    characterSize = blockWidth * 2;
+    character.size = blockWidth * 2;
 
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
-    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + characterSize + parseInt(blockHeight / 2);
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + character.size + parseInt(blockHeight / 2);
 
-    characterX = startX;
-    characterY = startX;
+    character.x = startX;
+    character.y = startX;
 
-    enemyX = boardWidth - characterSize - startX;
-    enemyY = startX;
+    enemy.x = boardWidth - character.size - startX;
+    enemy.y = startX;
 
     timerX = startX;
-    timerY = boardHeight + characterSize + blockHeight;
+    timerY = boardHeight + character.size + blockHeight;
 
     pathWidth = parseInt(blockWidth / 5) * 2;
 
     endMessageX = startX;
-    endMessageY = characterY + characterSize + (2 * fontSize);
+    endMessageY = character.y + character.size + (2 * fontSize);
   }
 }
 
