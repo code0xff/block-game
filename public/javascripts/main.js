@@ -1,4 +1,5 @@
-let time = 180;
+const maxTime = 180;
+let time = maxTime;
 
 let canvas;
 let context;
@@ -27,15 +28,15 @@ const character = {
 }
 
 let timer;
-let timerX;
-let timerY;
+let timeWidth;
+let timeHeight;
 
 let selectedEnemy = { type: 0, image: 'void', hp: 0 };
 
 let hpBarWidth;
-const hpBarHeight = 5;
+let hpBarHeight;
 let mpBarWidth;
-const mpBarHeight = 5;
+let mpBarHeight;
 
 let pathWidth;
 
@@ -115,7 +116,7 @@ const wizard = {
   mana: function() {
     const displayedMp = parseInt(mpBarWidth * (character.mp / character.maxMp));
     draw.removeEnergyBar(context, 0, hpBarHeight, mpBarWidth, mpBarHeight);
-    draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#0000ff");
+    draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#008CBA");
   },
   magic: function() {
     if (character.mp >= character.maxMp) {
@@ -231,13 +232,6 @@ const board = {
   }
 }
 
-const text = {
-  time: function() {
-    draw.removeText(context, 0, timerY, boardWidth, fontSize);
-    draw.drawText(context, time + " second(s) left...", timerX, timerY, fontSize, "sans-serif", "#ffffff");
-  }
-}
-
 const image = {
   wizard: function(image) {
     draw.drawImage(context, character.x, character.y, character.size, character.size, "assets/" + image + "-48px.png");
@@ -248,7 +242,7 @@ const image = {
   enemyHp: function(fullHp, hp) {
     const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
     draw.removeEnergyBar(context, 0, 0, hpBarWidth, hpBarHeight);
-    draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight, "#ff0000");
+    draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight, "#FF4000");
   },
   effect: function(effectImage, enemyImage) {
     draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + effectImage + "-effect-48px.png");
@@ -280,11 +274,13 @@ const game = {
     wizard.ready();
     enemy.create();
 
-    text.time();
+    draw.drawEnergyBar(context, 0, hpBarHeight + mpBarHeight, timeWidth, timeWidth, timeHeight, "#4CAF50");
     timer = setInterval(function() {
       time -= 1;
       if (time >= 0) {
-        text.time();
+        draw.removeEnergyBar(context, 0, hpBarHeight + mpBarHeight, timeWidth, timeHeight);
+        let leftTimeWidth = parseInt(timeWidth * (time / maxTime)); 
+        draw.drawEnergyBar(context, 0, hpBarHeight + mpBarHeight, timeWidth, leftTimeWidth, timeHeight, "#4CAF50");
       } else {
         game.end();
       }
@@ -419,34 +415,35 @@ const main = {
     boardHeight = canvas.width;
     hpBarWidth = canvas.width;
     mpBarWidth = canvas.width;
+    timeWidth = canvas.width;
 
     blockWidth = parseInt(boardWidth / (option.colSize + 1));
     blockHeight = parseInt(boardHeight / (option.rowSize + 1));
+
+    hpBarHeight = parseInt(blockHeight / 10);
+    mpBarHeight = parseInt(blockHeight / 10);
+    timeHeight = parseInt(blockHeight / 10);
+    pathWidth = parseInt(blockHeight / 10);
 
     fontSize = parseInt(blockHeight / 2);
     character.size = blockWidth * 2;
 
     startX = parseInt((boardWidth - (blockWidth * option.colSize)) / 2);
-    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + character.size + parseInt(blockHeight / 2);
+    startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + character.size + hpBarHeight + mpBarHeight + parseInt(blockHeight / 2);
 
     character.x = startX;
-    character.y = startX;
+    character.y = startX + hpBarHeight + mpBarHeight;
 
     title.imageX = parseInt((canvas.width - character.size) / 2);
     title.imageY = parseInt((canvas.height - character.size) / 2);
 
     title.x = startX;
-    title.y = title.imageY - fontSize;
+    title.y = parseInt(canvas.height / 3);
     title.messageX = startX;
-    title.messageY = title.imageY + character.size + (2 * fontSize);
+    title.messageY = parseInt(canvas.height / 3) * 2;
 
     enemy.x = boardWidth - character.size - startX;
     enemy.y = startX;
-
-    timerX = startX;
-    timerY = boardHeight + character.size + blockHeight;
-
-    pathWidth = parseInt(blockWidth / 5) * 2;
 
     end.imageX = parseInt((canvas.width - character.size) / 2);
     end.imageY = parseInt((canvas.height - character.size) / 2);
