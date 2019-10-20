@@ -37,6 +37,14 @@ const draw = {
     }
     image.src = imageSource;
   },
+  drawImageWithText: function(context, x, y, width, height, imageSource, writeText) {
+    const image = new Image();
+    image.onload = function () {
+      context.drawImage(image, x, y, width, height);
+      writeText();
+    }
+    image.src = imageSource;
+  },
   removeImage: function(context, x, y, width, height) {
     context.clearRect(x, y, width, height);
   },

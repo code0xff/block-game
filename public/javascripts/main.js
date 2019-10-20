@@ -52,7 +52,8 @@ const title = {
     { message: 'Please tab screen...', x: 0, y: 0, size: 0, color: '#ffffff' }
   ],
   image: [
-    { x: 0, y: 0, size: 0, file: 'assets/red_dragon_title-48px.png' }
+    { x: 0, y: 0, size: 0, file: 'assets/red_dragon_title-48px.png' },
+    { x: 0, y: 0, size: 0, file: 'assets/green_wizard_back-48px.png' }
   ]
 }
 
@@ -258,8 +259,13 @@ const game = {
   mode: 0, // game mode: 0 (start), 1 (puzzle), 2 (end)
   menu: function() {
     draw.removeAll(canvas);
-    draw.drawImage(context, title.image[0].x, title.image[0].y, title.image[0].size, title.image[0].size, title.image[0].file);
-    draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
+    draw.drawImageWithText(context, title.image[0].x, title.image[0].y, title.image[0].size, title.image[0].size, title.image[0].file,
+      function() {
+        draw.drawText(context, title.text[0].message, title.text[0].x, title.text[0].y, title.text[0].size, "sans-serif", title.text[0].color);
+      });
+      draw.drawImageWithText(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file, function() {
+        draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
+      });
   },
   start: function () {
     game.mode = 1;
@@ -433,11 +439,15 @@ const main = {
 
     title.text[0].x = startX;
     title.text[0].y = parseInt(canvas.height / 2);
+    title.text[0].size = fontSize;
     title.text[1].x = startX;
-    title.text[1].y = parseInt(canvas.height / 5) * 4;
+    title.text[1].y = parseInt(canvas.height / 4) * 3;
     title.text[1].size = fontSize;
 
     title.image[0].size = canvas.width;
+    title.image[1].x = parseInt((canvas.width - character.size) / 2);
+    title.image[1].y = canvas.height - character.size;
+    title.image[1].size = character.size;
 
     enemy.x = boardWidth - character.size - startX;
     enemy.y = startX;
