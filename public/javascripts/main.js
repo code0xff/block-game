@@ -90,12 +90,13 @@ const EffectTypes = [
 ];
 
 const EnemyTypes = [
-  { type: 0, image: 'void', hp: 0, critical: [], immune: [] },
-  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1] },
-  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2] },
-  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5] },
-  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3] },
-  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4] }
+  { type: 0, image: 'void', hp: 0, critical: [], immune: [], item: [] },
+  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1], item: [] },
+  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2], item: [] },
+  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5], item: [] },
+  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3], item: [] },
+  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4], item: [] },
+  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [5], item: []}
 ];
 
 let startBlock;
@@ -152,7 +153,7 @@ const enemy = {
     }
     selectedEnemy.hp -= value;
     if (selectedEnemy.hp > 0) {
-      image.enemyHp(EnemyTypes[type].hp, selectedEnemy.hp);
+      image.enemyHp(EnemyTypes[selectedEnemy.type].hp, selectedEnemy.hp);
       image.effect(EffectTypes[type].image, EnemyTypes[selectedEnemy.type].image);
     } else {
       character.mp += (-selectedEnemy.hp);
