@@ -48,6 +48,7 @@ const draw = {
     context.clearRect(x, y, width, height);
   },
   drawText: function(context, text, x, y, fontSize, font, fontColor) {
+    console.log(context, text, x, y, fontSize, font, fontColor);
     context.fillStyle = fontColor;
     context.font = fontSize + "px " + font;
     context.fillText(text, x, y);
