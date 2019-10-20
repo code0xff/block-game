@@ -442,17 +442,17 @@ const main = {
     character.x = startX;
     character.y = startX + hpBarHeight + mpBarHeight;
 
+    title.text[0].size = fontSize * 2;
     title.text[0].x = startX;
     title.text[0].y = parseInt(canvas.height / 2);
-    title.text[0].size = fontSize * 2;
    
-    title.text[1].x = startX;
-    title.text[1].y = title.text[0].y + title.text[0].size;
     title.text[1].size = fontSize * 2;
-
-    title.text[2].x = startX;
-    title.text[2].y = title.text[1].y + title.text[1].size;
+    title.text[1].x = startX;
+    title.text[1].y = title.text[0].y + title.text[1].size;
+ 
     title.text[2].size = fontSize * 2;
+    title.text[2].x = startX;
+    title.text[2].y = title.text[1].y + title.text[2].size;
 
     title.text[3].x = startX;
     title.text[3].y = parseInt(canvas.height / 5) * 4;
