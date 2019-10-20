@@ -262,10 +262,11 @@ const game = {
     draw.drawImageWithText(context, title.image[0].x, title.image[0].y, title.image[0].size, title.image[0].size, title.image[0].file,
       function() {
         draw.drawText(context, title.text[0].message, title.text[0].x, title.text[0].y, title.text[0].size, "sans-serif", title.text[0].color);
-      });
-      draw.drawImageWithText(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file, function() {
         draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
       });
+      // draw.drawImageWithText(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file, function() {
+      //   draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
+      // });
   },
   start: function () {
     game.mode = 1;
