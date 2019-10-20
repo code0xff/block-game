@@ -51,9 +51,10 @@ const title = {
   x: 0,
   y: 0,
   color: '#ffffff',
-  imageX: 0,
-  imageY: 0,
-  image: 'assets/green_wizard2_front-48px.png',
+  image: [
+    { x: 0, y: 0, size: 0, file: 'assets/red_dragon_title-48px.png' },
+    { x: 0, y: 0, size: 0, file: 'assets/green_wizard_back-48px.png' },
+],
   messageX: 0,
   messageY: 0,
   messageText: 'Please tab screen...'
@@ -261,8 +262,8 @@ const game = {
   mode: 0, // game mode: 0 (start), 1 (puzzle), 2 (end)
   menu: function() {
     draw.removeAll(canvas);
-    draw.drawText(context, title.text, title.x, title.y, fontSize, "sans-serif", "#ffffff");
-    draw.drawImage(context, title.imageX, title.imageY, character.size, character.size, title.image);
+    draw.drawImage(context, title.image[0].x, title.image[0].y, title.image[0].size, title.image[0].size, title.image[0].file);
+    draw.drawImage(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file);
     draw.drawText(context, title.messageText, title.messageX, title.messageY, fontSize, "sans-serif", "#ffffff");
   },
   start: function () {
@@ -435,14 +436,16 @@ const main = {
     character.x = startX;
     character.y = startX + hpBarHeight + mpBarHeight;
 
-    title.imageX = parseInt((canvas.width - character.size) / 2);
-    title.imageY = parseInt((canvas.height - character.size) / 2);
-
     title.x = startX;
     title.y = parseInt(canvas.height / 3);
     title.messageX = startX;
-    title.messageY = parseInt(canvas.height / 3) * 2;
+    title.messageY = parseInt(canvas.height / 5) * 4;
 
+    title.image[0].size = canvas.width;
+    title.image[1].size = blockWidth * 2;
+
+    title.image[1].x = parseInt((canvas.width - title.image[1].size) / 2);
+    title.image[1].y = canvas.height - title.image[1].size;
     enemy.x = boardWidth - character.size - startX;
     enemy.y = startX;
 
