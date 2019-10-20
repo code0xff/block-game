@@ -48,7 +48,9 @@ let endMessageY;
 
 const title = {
   text: [
-    { message: 'Puzzle & Magic', x: 0, y: 0, size: 0, color: '#ffffff' },
+    { message: 'Puzzle', x: 0, y: 0, size: 0, color: '#ffffff' },
+    { message: 'And', x: 0, y: 0, size: 0, color: '#ffffff' },
+    { message: 'Magic', x: 0, y: 0, size: 0, color: '#ffffff' },
     { message: 'Please tab screen...', x: 0, y: 0, size: 0, color: '#ffffff' }
   ],
   image: [
@@ -263,6 +265,8 @@ const game = {
       function() {
         draw.drawText(context, title.text[0].message, title.text[0].x, title.text[0].y, title.text[0].size, "sans-serif", title.text[0].color);
         draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
+        draw.drawText(context, title.text[2].message, title.text[2].x, title.text[2].y, title.text[2].size, "sans-serif", title.text[2].color);
+        draw.drawText(context, title.text[3].message, title.text[3].x, title.text[3].y, title.text[3].size, "sans-serif", title.text[1].color);
       });
       // draw.drawImageWithText(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file, function() {
       //   draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
@@ -440,10 +444,19 @@ const main = {
 
     title.text[0].x = startX;
     title.text[0].y = parseInt(canvas.height / 2);
-    title.text[0].size = fontSize;
+    title.text[0].size = fontSize * 2;
+   
     title.text[1].x = startX;
-    title.text[1].y = parseInt(canvas.height / 4) * 3;
-    title.text[1].size = fontSize;
+    title.text[1].y = title.text[0].y + title.text[0].size;
+    title.text[1].size = fontSize * 2;
+
+    title.text[2].x = startX;
+    title.text[2].y = title.text[1].y + title.text[1].size;
+    title.text[2].size = fontSize * 2;
+
+    title.text[3].x = startX;
+    title.text[3].y = parseInt(canvas.height / 5) * 4;
+    title.text[3].size = fontSize;
 
     title.image[0].size = canvas.width;
     title.image[1].x = parseInt((canvas.width - character.size) / 2);
