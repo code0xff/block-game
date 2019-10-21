@@ -1,4 +1,4 @@
-const maxTime = 180;
+const maxTime = 300;
 let time = maxTime;
 
 let canvas;
@@ -24,14 +24,15 @@ const character = {
   y: 0,
   size: 0,
   mp: 0,
-  maxMp: 100
+  maxMp: 100,
+  buff: 1
 }
 
 let timer;
 let timeWidth;
 let timeHeight;
 
-let selectedEnemy = { type: 0, image: 'void', hp: 0 };
+let selectedEnemy = { type: 0, image: 'void', hp: 0, nuff: 1 };
 
 let hpBarWidth;
 let hpBarHeight;
@@ -42,6 +43,7 @@ let pathWidth;
 
 const animationTime = 300;
 
+let defeatedCount = 0;
 let score = 0;
 let endMessageX;
 let endMessageY;
@@ -66,8 +68,9 @@ const end = {
   messageX: 0,
   messageY: 0,
   messageText: [
-    function(count) { return "You've defeated " + count + " monsters..."},
-    "Very well..."
+    function(count) { return "You've defeated " + count + " monsters..." },
+    function(scorevalue) { return "You earned " + scorevalue + " points..." },
+    function() { return "Very well..." }
   ]
 }
 
@@ -90,13 +93,16 @@ const EffectTypes = [
 ];
 
 const EnemyTypes = [
-  { type: 0, image: 'void', hp: 0, critical: [], immune: [], item: [] },
-  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1], item: [] },
-  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2], item: [] },
-  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5], item: [] },
-  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3], item: [] },
-  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4], item: [] },
-  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [5], item: []}
+  { type: 0, image: 'void', hp: 0, critical: [], immune: [], effect: function() {} },
+  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1], effect: function() {} },
+  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2], effect: function() {} },
+  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5], effect: function() {} },
+  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3], effect: function() {} },
+  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4], effect: function() {} },
+  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [5], effect: function() { character.buff += 0.2 } },
+  { type: 7, image: 'green_dragon', hp: 300, critical: [3], immune: [4], effect: function() { time = (time + 30 < maxTime ? time + 30 : maxTime) } },
+  { type: 8, image: 'blue_dragon', hp: 300, critical: [5], immune: [3], effect: function() { character.mp = character.maxMp } },
+  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff -= 0.1 } },
 ];
 
 let startBlock;
@@ -141,7 +147,7 @@ const enemy = {
     const enemyType = parseInt(Math.random() * (EnemyTypes.length - 1)) + 1;
     selectedEnemy.type = enemyType;
     selectedEnemy.image = EnemyTypes[enemyType].image;
-    selectedEnemy.hp = EnemyTypes[enemyType].hp;
+    selectedEnemy.hp = parseInt(EnemyTypes[enemyType].hp * selectedEnemy.nuff);
     image.enemy(selectedEnemy.image);
     image.enemyHp(EnemyTypes[enemyType].hp, selectedEnemy.hp);
   },
@@ -151,18 +157,21 @@ const enemy = {
     } else if (EnemyTypes[selectedEnemy.type].immune.indexOf(type) !== -1) {
       value = parseInt(value / 2);
     }
+    value = parseInt(value * character.buff);
     selectedEnemy.hp -= value;
     if (selectedEnemy.hp > 0) {
       image.enemyHp(EnemyTypes[selectedEnemy.type].hp, selectedEnemy.hp);
       image.effect(EffectTypes[type].image, EnemyTypes[selectedEnemy.type].image);
     } else {
+      EnemyTypes[selectedEnemy.type].effect();
       character.mp += (-selectedEnemy.hp);
       if (character.mp > character.maxMp) {
         character.mp = character.maxMp;
       }
       wizard.mana();
       draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
-      score += 1;
+      defeatedCount += 1;
+      score += EnemyTypes[selectedEnemy.type].hp;
       enemy.create();
     }
   }
@@ -268,9 +277,6 @@ const game = {
         draw.drawText(context, title.text[2].message, title.text[2].x, title.text[2].y, title.text[2].size, "sans-serif", title.text[2].color);
         draw.drawText(context, title.text[3].message, title.text[3].x, title.text[3].y, title.text[3].size, "sans-serif", title.text[1].color);
       });
-      // draw.drawImageWithText(context, title.image[1].x, title.image[1].y, title.image[1].size, title.image[1].size, title.image[1].file, function() {
-      //   draw.drawText(context, title.text[1].message, title.text[1].x, title.text[1].y, title.text[1].size, "sans-serif", title.text[1].color);
-      // });
   },
   start: function () {
     game.mode = 1;
@@ -302,8 +308,9 @@ const game = {
     setTimeout(function() {
       draw.removeAll(canvas);
       image.endWizard();
-      draw.drawText(context, end.messageText[0](score), end.messageX, end.messageY, fontSize, "sans-serif", "#ffffff");
-      draw.drawText(context, end.messageText[1], end.messageX, end.messageY + fontSize, fontSize, "sans-serif", "#ffffff");
+      draw.drawText(context, end.messageText[0](defeatedCount), end.messageX, end.messageY, fontSize, "sans-serif", "#ffffff");
+      draw.drawText(context, end.messageText[1](score), end.messageX, end.messageY + fontSize, fontSize, "sans-serif", "#ffffff");
+      draw.drawText(context, end.messageText[2](), end.messageX, end.messageY + (2 * fontSize), fontSize, "sans-serif", "#ffffff");
     }, 1000);
   }
 }
@@ -440,7 +447,7 @@ const main = {
     startY = parseInt((boardHeight - (blockHeight * option.rowSize)) / 2) + character.size + hpBarHeight + mpBarHeight + parseInt(blockHeight / 2);
 
     character.x = startX;
-    character.y = startX + hpBarHeight + mpBarHeight;
+    character.y = startX + hpBarHeight + mpBarHeight + timeHeight;
 
     title.text[0].size = fontSize * 2;
     title.text[0].x = startX;
@@ -463,8 +470,8 @@ const main = {
     title.image[1].y = canvas.height - character.size;
     title.image[1].size = character.size;
 
-    enemy.x = boardWidth - character.size - startX;
-    enemy.y = startX;
+    enemy.x = canvas.width - character.size - startX;
+    enemy.y = startX + hpBarHeight + mpBarHeight + timeHeight;
 
     end.imageX = parseInt((canvas.width - character.size) / 2);
     end.imageY = parseInt((canvas.height - character.size) / 2);
