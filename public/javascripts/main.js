@@ -145,10 +145,11 @@ const wizard = {
         wizard.mana();
         draw.removeImage(context, character.x, character.y, character.size, character.size);
         image.wizard("green_wizard2_front");
+        image.effectOnce("portal");
         setTimeout(function() {
           wizard.ready();
+          enemy.create();
         }, animationTime);
-        enemy.create();
       }
     }
   ]
@@ -274,6 +275,9 @@ const image = {
       draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
       draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + enemyImage + "-48px.png");
     }, animationTime);
+  },
+  effectOnce: function(effectImage) {
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + effectImage + "-effect-48px.png");
   },
   endWizard: function() {
     draw.drawImage(context, end.imageX, end.imageY, character.size, character.size, "assets/green_wizard2_front-48px.png");
