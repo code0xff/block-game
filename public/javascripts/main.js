@@ -102,7 +102,7 @@ const EnemyTypes = [
   { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [5], effect: function() { character.buff += 0.2 } },
   { type: 7, image: 'green_dragon', hp: 300, critical: [3], immune: [4], effect: function() { time = (time + 30 < maxTime ? time + 30 : maxTime) } },
   { type: 8, image: 'blue_dragon', hp: 300, critical: [5], immune: [3], effect: function() { character.mp = character.maxMp } },
-  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff -= 0.1 } },
+  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff -= 0.05 } },
 ];
 
 let startBlock;
@@ -125,25 +125,40 @@ const wizard = {
     draw.removeEnergyBar(context, 0, hpBarHeight, mpBarWidth, mpBarHeight);
     draw.drawEnergyBar(context, 0, hpBarHeight, mpBarWidth, displayedMp, mpBarHeight, "#008CBA");
   },
-  magic: function() {
-    if (character.mp >= character.maxMp) {
-      character.mp = 0;
-      wizard.mana();
-      board.setBlocksOnBoard();
-      board.drawBoard();
-      draw.removeImage(context, character.x, character.y, character.size, character.size);
-      image.wizard("green_wizard2_front");
-      setTimeout(function() {
-        wizard.ready();
-      }, animationTime);
+  magic: [
+    function() {
+      if (character.mp >= character.maxMp) {
+        character.mp = 0;
+        wizard.mana();
+        board.setBlocksOnBoard();
+        board.drawBoard();
+        draw.removeImage(context, character.x, character.y, character.size, character.size);
+        image.wizard("green_wizard2_front");
+        setTimeout(function() {
+          wizard.ready();
+        }, animationTime);
+      }
+    },
+    function() {
+      if (character.mp >= character.maxMp) {
+        character.mp = 0;
+        wizard.mana();
+        draw.removeImage(context, character.x, character.y, character.size, character.size);
+        image.wizard("green_wizard2_front");
+        setTimeout(function() {
+          wizard.ready();
+        }, animationTime);
+        enemy.create();
+      }
     }
-  }
+  ]
 }
 
 const enemy = {
   x: 0,
   y: 0,
   create: function() {
+    draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
     const enemyType = parseInt(Math.random() * (EnemyTypes.length - 1)) + 1;
     selectedEnemy.type = enemyType;
     selectedEnemy.image = EnemyTypes[enemyType].image;
@@ -169,7 +184,6 @@ const enemy = {
         character.mp = character.maxMp;
       }
       wizard.mana();
-      draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
       defeatedCount += 1;
       score += EnemyTypes[selectedEnemy.type].hp;
       enemy.create();
@@ -344,7 +358,9 @@ const main = {
               selectedBlocks.push(startBlock.row + '' + startBlock.col);
             }
           } else if (pos.x >= character.x && pos.x <= character.x + character.size && pos.y >= character.y &&  pos.y <= character.y + character.size) {
-            wizard.magic();
+            wizard.magic[0]();
+          } else if (pos.x >= enemy.x && pos.x <= enemy.x + character.size && pos.y >= enemy.y &&  pos.y <= enemy.y + character.size) {
+            wizard.magic[1]();
           }
         }
       }
