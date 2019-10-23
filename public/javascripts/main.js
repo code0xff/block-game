@@ -1,4 +1,4 @@
-const maxTime = 300;
+const maxTime = 180;
 let time = maxTime;
 
 let canvas;
