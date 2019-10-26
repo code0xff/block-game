@@ -3,7 +3,6 @@ let time = maxTime;
 
 let canvas;
 let context;
-let gameWidth;
 let boardWidth;
 let boardHeight;
 let fontSize;
@@ -26,7 +25,7 @@ const character = {
   mp: 0,
   maxMp: 100,
   buff: 1
-}
+};
 
 let timer;
 let timeWidth;
@@ -45,8 +44,6 @@ const animationTime = 300;
 
 let defeatedCount = 0;
 let score = 0;
-let endMessageX;
-let endMessageY;
 
 const title = {
   text: [
@@ -445,7 +442,6 @@ const main = {
     }, false);
   },
   setSize: function() {
-    gameWidth = canvas.width;
     boardWidth = canvas.width;
     boardHeight = canvas.width;
     hpBarWidth = canvas.width;
