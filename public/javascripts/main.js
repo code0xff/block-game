@@ -1,4 +1,4 @@
-const maxTime = 300;
+const maxTime = 180;
 let time = maxTime;
 
 let canvas;
@@ -96,10 +96,10 @@ const EnemyTypes = [
   { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5], effect: function() {} },
   { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3], effect: function() {} },
   { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4], effect: function() {} },
-  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [5], effect: function() { character.buff += 0.2 } },
+  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [3], effect: function() { character.buff = (character.buff + 0.1 <= 2 ? character.buff + 0.1 : character.buff) } },
   { type: 7, image: 'green_dragon', hp: 300, critical: [3], immune: [4], effect: function() { time = (time + 30 < maxTime ? time + 30 : maxTime) } },
   { type: 8, image: 'blue_dragon', hp: 300, critical: [5], immune: [3], effect: function() { character.mp = character.maxMp } },
-  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff -= 0.05 } },
+  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff = (selectedEnemy.nuff - 0.05 >= 0.5 ? selectedEnemy.nuff - 0.05 : selectedEnemy.nuff) } },
 ];
 
 let startBlock;
