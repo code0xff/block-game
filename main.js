@@ -53,15 +53,15 @@ const title = {
     { message: 'Please tab screen...', x: 0, y: 0, size: 0, color: '#ffffff' }
   ],
   image: [
-    { x: 0, y: 0, size: 0, file: 'assets/red_dragon_title-48px.png' },
-    { x: 0, y: 0, size: 0, file: 'assets/green_wizard_back-48px.png' }
+    { x: 0, y: 0, size: 0, file: './red_dragon_title-48px.png' },
+    { x: 0, y: 0, size: 0, file: './green_wizard_back-48px.png' }
   ]
 }
 
 const end = {
   imageX: 0,
   imageY: 0,
-  image: 'assets/green_wizard2_front-48px.png',
+  image: './green_wizard2_front-48px.png',
   messageX: 0,
   messageY: 0,
   messageText: [
@@ -256,10 +256,10 @@ const board = {
 
 const image = {
   wizard: function(image) {
-    draw.drawImage(context, character.x, character.y, character.size, character.size, "assets/" + image + "-48px.png");
+    draw.drawImage(context, character.x, character.y, character.size, character.size, "./" + image + "-48px.png");
   },
   enemy: function(image) {
-    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + image + "-48px.png");
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "./" + image + "-48px.png");
   },
   enemyHp: function(fullHp, hp) {
     const displayedHp = parseInt(hpBarWidth * (hp / fullHp));
@@ -267,17 +267,17 @@ const image = {
     draw.drawEnergyBar(context, 0, 0, hpBarWidth, displayedHp, hpBarHeight, "#FF4000");
   },
   effect: function(effectImage, enemyImage) {
-    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + effectImage + "-effect-48px.png");
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "./" + effectImage + "-effect-48px.png");
     setTimeout(function() {
       draw.removeImage(context, enemy.x, enemy.y, character.size, character.size);
-      draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + enemyImage + "-48px.png");
+      draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "./" + enemyImage + "-48px.png");
     }, animationTime);
   },
   effectOnce: function(effectImage) {
-    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "assets/" + effectImage + "-effect-48px.png");
+    draw.drawImage(context, enemy.x, enemy.y, character.size, character.size, "./" + effectImage + "-effect-48px.png");
   },
   endWizard: function() {
-    draw.drawImage(context, end.imageX, end.imageY, character.size, character.size, "assets/green_wizard2_front-48px.png");
+    draw.drawImage(context, end.imageX, end.imageY, character.size, character.size, "./green_wizard2_front-48px.png");
   }
 }
 
