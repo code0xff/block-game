@@ -91,15 +91,15 @@ const EffectTypes = [
 
 const EnemyTypes = [
   { type: 0, image: 'void', hp: 0, critical: [], immune: [], effect: function() {} },
-  { type: 1, image: 'light', hp: 150, critical: [2], immune: [1], effect: function() {} },
-  { type: 2, image: 'dark', hp: 150, critical: [1], immune: [2], effect: function() {} },
-  { type: 3, image: 'fire', hp: 150, critical: [4], immune: [5], effect: function() {} },
-  { type: 4, image: 'ice', hp: 150, critical: [5], immune: [3], effect: function() {} },
-  { type: 5, image: 'earth', hp: 150, critical: [3], immune: [4], effect: function() {} },
-  { type: 6, image: 'red_dragon', hp: 300, critical: [4], immune: [3], effect: function() { character.buff = (character.buff + 0.1 <= 2 ? character.buff + 0.1 : character.buff) } },
-  { type: 7, image: 'green_dragon', hp: 300, critical: [3], immune: [4], effect: function() { time = (time + 30 < maxTime ? time + 30 : maxTime) } },
-  { type: 8, image: 'blue_dragon', hp: 300, critical: [5], immune: [3], effect: function() { character.mp = character.maxMp } },
-  { type: 9, image: 'black_dragon', hp: 300, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff = (selectedEnemy.nuff - 0.05 >= 0.5 ? selectedEnemy.nuff - 0.05 : selectedEnemy.nuff) } },
+  { type: 1, image: 'light', hp: 100, critical: [2], immune: [1], effect: function() {} },
+  { type: 2, image: 'dark', hp: 100, critical: [1], immune: [2], effect: function() {} },
+  { type: 3, image: 'fire', hp: 100, critical: [4], immune: [5], effect: function() {} },
+  { type: 4, image: 'ice', hp: 100, critical: [5], immune: [3], effect: function() {} },
+  { type: 5, image: 'earth', hp: 100, critical: [3], immune: [4], effect: function() {} },
+  { type: 6, image: 'red_dragon', hp: 200, critical: [4], immune: [3], effect: function() { character.buff = (character.buff + 0.1 <= 2 ? character.buff + 0.1 : character.buff) } },
+  { type: 7, image: 'green_dragon', hp: 200, critical: [3], immune: [4], effect: function() { time = (time + 30 < maxTime ? time + 30 : maxTime) } },
+  { type: 8, image: 'blue_dragon', hp: 200, critical: [5], immune: [3], effect: function() { character.mp = character.maxMp } },
+  { type: 9, image: 'black_dragon', hp: 200, critical: [1], immune: [2], effect: function() { selectedEnemy.nuff = (selectedEnemy.nuff - 0.05 >= 0.5 ? selectedEnemy.nuff - 0.05 : selectedEnemy.nuff) } },
 ];
 
 let startBlock;
@@ -364,6 +364,8 @@ const main = {
             wizard.magic[1]();
           }
         }
+      } else {
+        location.reload();
       }
     }, false);
 
